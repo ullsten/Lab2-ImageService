@@ -31,8 +31,6 @@ namespace Lab2_ImageService.Controllers
             return View();
         }
 
-
-        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {
@@ -63,21 +61,10 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                var thumbnailDirectory = Path.Combine(fullPath, "Thumbnails");
-                if (!Directory.Exists(thumbnailDirectory))
-                {
-                    Directory.CreateDirectory(thumbnailDirectory);
-                }
-                // Create a thumbnail
-                var thumbnailPath = Path.Combine(thumbnailDirectory, formFile.FileName);
+                var thumbnailWidth = fileUpload.ThumbnailWidth;
+                var thumbnailHeight = fileUpload.ThumbnailHeight;
 
-                //var thumbnailPath = Path.Combine(fullPath, "Thumbnails", formFile.FileName);
-                using (var thumbnailStream = new FileStream(thumbnailPath, FileMode.Create))
-                {
-                    var thumbnailSize = fileUpload.ThumbnailSize; // Get user input for thumbnail size
-                    await _computerVisionService.GenerateThumbnailAsync(filePath, thumbnailStream, thumbnailSize);
-                }
-
+                await _computerVisionService.GetThumbnail(filePath, thumbnailWidth, thumbnailHeight);
                 ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
             }
 

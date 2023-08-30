@@ -12,46 +12,32 @@
 <div class="container mt-5">
     @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-
-
-
-     @*    <div class="form-group">
-            <label class="file">
-                @Html.TextBoxFor(model => model.FormFile, new { type = "file", aria_label = "File browser example", onchange = "displayFileName(this)" })
-                <span class="file-custom"></span>
-            </label>
-
-            <input type="submit" class="btn btn-primary" value="Upload" />
-        </div> *@
-        @* <span id="selectedFileName" class="text-muted"></span>
-
-        <div class="form-group">
-            <label for="thumbnailSize">Thumbnail Size (in pixels):</label>
-            <input type="number" class="form-control" id="thumbnailSize" name="ThumbnailSize" min="1" required>
-        </div>
-
-        <div class="form-group">
-            <label for="imageFile">Choose an image:</label>
-            <input type="file" class="form-control-file" id="imageFile" name="FormFile" accept=".jpg, .jpeg, .png" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Upload and Analyze</button> *@
-@* 
+     @* 
         <div class="form-group">
             <label for="imageUrl"></label>
             <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="Enter image URL">
         </div> *@
 
         <div class="form-group">
-            <label for="thumbnailSize">Thumbnail Size (in pixels):</label>
-            <input type="number" class="form-control" id="thumbnailSize" name="ThumbnailSize" min="1" required>
-        </div>
-
-        <div class="form-group">
             <label for="imageFile">Choose an image:</label>
             <input type="file" class="form-control-file" id="imageFile" name="FormFile" accept=".jpg, .jpeg, .png" required>
         </div>
+        <hr />
+        <div class="form-group">
+            <label for="thumbnailWidth">Thumbnail Width (in pixels):</label>
+            <input type="number" class="form-control" id="thumbnailWidth" name="ThumbnailWidth" min="1" required>
+        </div>
 
+        <div class="form-group">
+            <label for="thumbnailHeight">Thumbnail Height (in pixels):</label>
+            <input type="number" class="form-control" id="thumbnailHeight" name="ThumbnailHeight" min="1" required>
+        </div>
+
+
+       @*  <div class="form-group">
+            <label for="thumbnailSize">Thumbnail Size (in pixels):</label>
+            <input type="number" class="form-control" id="thumbnailSize" name="ThumbnailSize" min="1" >
+        </div> *@
         <button type="submit" class="btn btn-primary">Upload and Analyze</button>
 
         @if (!string.IsNullOrEmpty(ViewData["SuccessMessage"] as string))
@@ -174,7 +160,7 @@
         </div>
     }
 </div>
-<script>
+@* <script>
     function displayFileName(input) {
         var fileNameSpan = document.getElementById("selectedFileName");
         if (input.files.length > 0) {
@@ -183,4 +169,4 @@
             fileNameSpan.textContent = "";
         }
     }
-</script>
+</script> *@

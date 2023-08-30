@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.Extensions.Hosting;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,11 +19,13 @@ namespace Lab2_ImageService.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<ComputerVisionService> _logger;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ComputerVisionService(IConfiguration configuration, ILogger<ComputerVisionService> logger)
+        public ComputerVisionService(IConfiguration configuration, ILogger<ComputerVisionService> logger, IWebHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
             _logger = logger;
+            _hostEnvironment = hostEnvironment;
         }
 
         //Sets subscriptionKey and endpoint
@@ -77,13 +80,6 @@ namespace Lab2_ImageService.Services
                 imageAnalysis.ImageAnalysisResult = results;
                 imageAnalysis.Landmarks = landmarks; // You might need to adjust this based on your model structure
 
-                //if(results.Objects.Count > 0)
-                //{
-                //    //Prepare image for drawing
-                    
-                //}
-
-
                 return imageAnalysis;
             }
             catch (Exception ex)
@@ -93,52 +89,7 @@ namespace Lab2_ImageService.Services
             }
         }
 
-
-        //public async Task<ImageAnalysisViewModel> AnalyzeImageUrlAsync(string imageUrl)
-        //{
-        //    try
-        //    {
-        //        ComputerVisionClient client = Authenticate();
-
-        //        List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
-        //{
-        //    VisualFeatureTypes.Categories,
-        //    VisualFeatureTypes.Description,
-        //    VisualFeatureTypes.Faces,
-        //    VisualFeatureTypes.ImageType,
-        //    VisualFeatureTypes.Tags,
-        //    VisualFeatureTypes.Adult,
-        //    VisualFeatureTypes.Color,
-        //    VisualFeatureTypes.Brands,
-        //    VisualFeatureTypes.Objects,
-        //};
-
-        //        ImageAnalysis results;
-
-        //        using (var httpClient = new HttpClient())
-        //        {
-        //            // Download the image content from the URL
-        //            var imageContent = await httpClient.GetByteArrayAsync(imageUrl);
-
-        //            // Analyze the downloaded image content
-        //            using (MemoryStream imageStream = new MemoryStream(imageContent))
-        //            {
-        //                results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
-        //            }
-        //        }
-
-        //        ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
-        //        imageAnalysis.ImageAnalysisResult = results;
-        //        return imageAnalysis;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "An error occurred while analyzing the image.");
-        //        throw; // Re-throw the exception after logging
-        //    }
-        //}
-
-        public async Task GetThumbnail(string imageFile)
+        public async Task GetThumbnail(string imageFile, int width, int height)
         {
             ComputerVisionClient client = Authenticate();
 
@@ -148,35 +99,27 @@ namespace Lab2_ImageService.Services
             using (var imageData = File.OpenRead(imageFile))
             {
                 // Get thumbnail data
-                var thumbnailStream = await client.GenerateThumbnailInStreamAsync(50, 50, imageData, true);
+                var thumbnailStream = await client.GenerateThumbnailInStreamAsync(width, height, imageData, true);
+
+                // Determine the full path to save the thumbnail
+                string originalFileName = Path.GetFileNameWithoutExtension(imageFile); // Get the original file name without extension
+                string thumbnailFileName = $"{originalFileName}_thumbnail.png"; // Add "_thumbnail" to the original file name
+                string thumbnailPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails", thumbnailFileName);
+
+                // Create the directory if it doesn't exist
+                string thumbnailDirectory = Path.GetDirectoryName(thumbnailPath);
+                if (!Directory.Exists(thumbnailDirectory))
+                {
+                    Directory.CreateDirectory(thumbnailDirectory);
+                }
 
                 // Save thumbnail image
-                string thumbnailFileName = "thumbnail.png";
-                using (Stream thumbnailFile = File.Create(thumbnailFileName))
+                using (Stream thumbnailFile = File.Create(thumbnailPath))
                 {
                     thumbnailStream.CopyTo(thumbnailFile);
                 }
 
-                Console.WriteLine($"Thumbnail saved in {thumbnailFileName}");
-            }
-
-        }
-
-        public async Task GenerateThumbnailAsync(string imagePath, Stream thumbnailStream, int size)
-        {
-            using (var image = Image.Load(imagePath))
-            {
-                // Calculate new dimensions while maintaining aspect ratio
-                var width = size;
-                var height = (int)((float)image.Height / image.Width * size);
-
-                image.Mutate(x => x.Resize(new ResizeOptions
-                {
-                    Size = new Size(width, height),
-                    Mode = ResizeMode.Max
-                }));
-
-                image.Save(thumbnailStream, new JpegEncoder()); // Save as JPEG
+                Debug.WriteLine($"Thumbnail saved in {thumbnailPath}");
             }
         }
     }
