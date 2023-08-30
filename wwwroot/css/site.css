@@ -8,7 +8,7 @@ a.navbar-brand {
 }
 
 /* Provide sufficient contrast against white background */
-a {
+/*a {
     color: #0366d6;
 }
 
@@ -22,7 +22,7 @@ a {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
-}
+}*/
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -58,12 +58,17 @@ button.accept-policy {
 html {
     position: relative;
     min-height: 100%;
+    color:aliceblue;
 }
 
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    /* background-color: #98c7dc;*/
+    background-color: rgb(12, 11, 11);
+    background-image: url(/images/pexels-lj-2085831.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
 .footer {
@@ -72,4 +77,17 @@ body {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
+}
+
+.analysisResult{
+    background-color: rgb(128, 128, 128, 0.8);
+    border-radius: 5px 5px 5px 5px;
+    margin-top: 10px;
+}
+
+.col-sm-6 {
+    margin-top: 10px;
+}
+.form-group{
+    color: floralwhite;
 }
