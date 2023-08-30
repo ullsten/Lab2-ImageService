@@ -10,144 +10,169 @@
 </div>
 
 <div class="container mt-5">
-@using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <div class="form-group">
-        <label class="file">
-            @Html.TextBoxFor(model => model.FormFile, new { type = "file", aria_label = "File browser example", onchange = "displayFileName(this)" })
-            <span class="file-custom"></span>
-        </label>
-       
-        <input type="submit" class="btn btn-primary" value="Upload" />
-    </div>
-    <span id="selectedFileName" class="text-muted"></span>
-
-    <div class="form-group">
-        <label for="imageUrl"></label>
-        <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="Enter image URL">
-    </div>
-
-
-
-    @if (!string.IsNullOrEmpty(ViewData["SuccessMessage"] as string))
+    @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <span class="badge badge-success">@ViewData["SuccessMessage"]</span>
-    }
 
-    @*Displaying Analysis results*@
-    <div class="row">
-        <div class="col-sm-6">
 
-            @if (ViewData["ImageUrl"] != null)
-            {
-                var imageUrl = Convert.ToString(ViewData["ImageUrl"]);
-                <img src="~/UploadImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
-            }
 
+     @*    <div class="form-group">
+            <label class="file">
+                @Html.TextBoxFor(model => model.FormFile, new { type = "file", aria_label = "File browser example", onchange = "displayFileName(this)" })
+                <span class="file-custom"></span>
+            </label>
+
+            <input type="submit" class="btn btn-primary" value="Upload" />
+        </div> *@
+        @* <span id="selectedFileName" class="text-muted"></span>
+
+        <div class="form-group">
+            <label for="thumbnailSize">Thumbnail Size (in pixels):</label>
+            <input type="number" class="form-control" id="thumbnailSize" name="ThumbnailSize" min="1" required>
         </div>
-        <div class="col-sm-6 small">
 
-            @if (ViewData["ImageAnalysisViewModel"] != null)
-            {
-                var imageAnalysisView = (ImageAnalysisViewModel)ViewData["ImageAnalysisViewModel"];
-                <h5>Description</h5>
-                foreach (var caption in imageAnalysisView.ImageAnalysisResult.Description.Captions)
+        <div class="form-group">
+            <label for="imageFile">Choose an image:</label>
+            <input type="file" class="form-control-file" id="imageFile" name="FormFile" accept=".jpg, .jpeg, .png" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload and Analyze</button> *@
+@* 
+        <div class="form-group">
+            <label for="imageUrl"></label>
+            <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="Enter image URL">
+        </div> *@
+
+        <div class="form-group">
+            <label for="thumbnailSize">Thumbnail Size (in pixels):</label>
+            <input type="number" class="form-control" id="thumbnailSize" name="ThumbnailSize" min="1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="imageFile">Choose an image:</label>
+            <input type="file" class="form-control-file" id="imageFile" name="FormFile" accept=".jpg, .jpeg, .png" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload and Analyze</button>
+
+        @if (!string.IsNullOrEmpty(ViewData["SuccessMessage"] as string))
+        {
+            <span class="badge badge-success">@ViewData["SuccessMessage"]</span>
+        }
+
+        @*Displaying Analysis results*@
+        <div class="row">
+            <div class="col-sm-6">
+
+                @if (ViewData["ImageUrl"] != null)
                 {
-                    <span class="text-info"> @caption.Text: with confidence @caption.Confidence.ToString("P")</span>
-
-                    <br />
+                    var imageUrl = Convert.ToString(ViewData["ImageUrl"]);
+                    <img src="~/UploadImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
                 }
-                <hr />
-                <h5>Category:</h5>
-                foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
-                {
-                    <li> @category.Name (Confidence: @category.Score.ToString("P"))</li>
 
-                    <br />
-               
-                <hr />
-                    <h5>Landmarks</h5>
-                    if(category.Detail?.Landmarks != null && category.Detail.Landmarks.Any())
+            </div>
+            <div class="col-sm-6 small">
+
+                @if (ViewData["ImageAnalysisViewModel"] != null)
+                {
+                    var imageAnalysisView = (ImageAnalysisViewModel)ViewData["ImageAnalysisViewModel"];
+                    <h5>Description</h5>
+                    foreach (var caption in imageAnalysisView.ImageAnalysisResult.Description.Captions)
                     {
-                        foreach (var landmark in category.Detail.Landmarks)
+                        <span class="text-info"> @caption.Text: with confidence @caption.Confidence.ToString("P")</span>
+
+                        <br />
+                    }
+                    <hr />
+                    <h5>Category:</h5>
+                    foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
+                    {
+                        <li> @category.Name (Confidence: @category.Score.ToString("P"))</li>
+
+                        <br />
+
+                        <hr />
+                        <h5>Landmarks</h5>
+                        if (category.Detail?.Landmarks != null && category.Detail.Landmarks.Any())
                         {
-                            <li>@landmark.Name (Confidence: @landmark.Confidence.ToString("P"))</li>
+                            foreach (var landmark in category.Detail.Landmarks)
+                            {
+                                <li>@landmark.Name (Confidence: @landmark.Confidence.ToString("P"))</li>
+                            }
                         }
+                        else
+                        {
+                            <p class="badge badge-pill badge-success">No landmarks detected</p>
+                        }
+                    }
+                    <hr />
+                    <h5>Tags</h5>
+                    foreach (var tag in imageAnalysisView.ImageAnalysisResult.Tags)
+                    {
+                        <span class="badge  badge-pill badge-success">@tag.Name - @tag.Confidence.ToString("P")</span>
+                    }
+                    <hr />
+                    <h5>Object Detection</h5>
+                    foreach (var obj in imageAnalysisView.ImageAnalysisResult.Objects)
+                    {
+
+                        <span class="badge  badge-pill badge-warning">@obj.ObjectProperty with Confidence @obj.Confidence.ToString("P")</span>
+                    }
+
+                    <hr />
+
+                    <h5>Brands</h5>
+                    foreach (var obj in imageAnalysisView.ImageAnalysisResult.Brands)
+                    {
+                        <span class="badge  badge-pill badge-info">@obj.Rectangle @obj.Confidence.ToString("P")</span>
+                    }
+                    <hr />
+                    <h5>Face Detection</h5>
+                    @if (imageAnalysisView.ImageAnalysisResult.Faces.Count == 0)
+                    {
+                        <span class="badge  badge-pill badge-danger">No faces detected</span>
                     }
                     else
                     {
-                        <p class="badge badge-pill badge-success">No landmarks detected</p>
+                        @foreach (var face in imageAnalysisView.ImageAnalysisResult.Faces)
+                        {
+                            <span class="badge  badge-pill badge-info">
+                                A @face.Gender of age @face.Age at location (Left: @face.FaceRectangle.Left, Top: @face.FaceRectangle.Top, Width: @face.FaceRectangle.Width, Height: @face.FaceRectangle.Height)
+                            </span>
+                            <br />
+                        }
                     }
-                }
-                <hr />
-                <h5>Tags</h5>
-                foreach (var tag in imageAnalysisView.ImageAnalysisResult.Tags)
-                {
-                    <span class="badge  badge-pill badge-success">@tag.Name - @tag.Confidence.ToString("P")</span>
-                }
-                <hr />
-                <h5>Object Detection</h5>
-                foreach (var obj in imageAnalysisView.ImageAnalysisResult.Objects)
-                {
+                    <hr />
+                    <h5>Image color scheme</h5>
+                    <span class="badge  badge-pill badge-secondary">Is black and white?:@imageAnalysisView.ImageAnalysisResult.Color.IsBWImg</span>
+                    <span class="badge  badge-pill badge-secondary">Accent color:@imageAnalysisView.ImageAnalysisResult.Color.AccentColor</span>
+                    <span class="badge  badge-pill badge-secondary">Dominant background color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorBackground</span>
+                    <span class="badge  badge-pill badge-secondary">Dominant foreground color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorForeground</span>
+                    <hr />
+                    <h5>Image Type</h5>
+                    <span class="badge  badge-pill badge-secondary">Clip Art Type: @imageAnalysisView.ImageAnalysisResult.ImageType.ClipArtType</span>
+                    <span class="badge  badge-pill badge-secondary">Line Drawing Type: @imageAnalysisView.ImageAnalysisResult.ImageType.LineDrawingType</span>
+                    <hr />
+                    <h5>Adult</h5>
 
-                    <span class="badge  badge-pill badge-warning">@obj.ObjectProperty with Confidence @obj.Confidence.ToString("P")</span>
-                }
-
-                <hr />
-                
-                <h5>Brands</h5>
-                foreach (var obj in imageAnalysisView.ImageAnalysisResult.Brands)
-                {
-                    <span class="badge  badge-pill badge-info">@obj.Rectangle @obj.Confidence.ToString("P")</span>
-                }
-                <hr />
-                <h5>Face Detection</h5>
-                @if (imageAnalysisView.ImageAnalysisResult.Faces.Count == 0)
-                {
-                    <span class="badge  badge-pill badge-danger">No faces detected</span>
-                }
-                else
-                {
-                    @foreach (var face in imageAnalysisView.ImageAnalysisResult.Faces)
-                    {
-                        <span class="badge  badge-pill badge-info">
-                            A @face.Gender of age @face.Age at location (Left: @face.FaceRectangle.Left, Top: @face.FaceRectangle.Top, Width: @face.FaceRectangle.Width, Height: @face.FaceRectangle.Height)
-                        </span>
-                        <br />
-                    }
-                }
-                <hr />
-                <h5>Image color scheme</h5>
-                <span class="badge  badge-pill badge-secondary">Is black and white?:@imageAnalysisView.ImageAnalysisResult.Color.IsBWImg</span>
-                <span class="badge  badge-pill badge-secondary">Accent color:@imageAnalysisView.ImageAnalysisResult.Color.AccentColor</span>
-                <span class="badge  badge-pill badge-secondary">Dominant background color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorBackground</span>
-                <span class="badge  badge-pill badge-secondary">Dominant foreground color:@imageAnalysisView.ImageAnalysisResult.Color.DominantColorForeground</span>
-                <hr />
-                <h5>Image Type</h5>
-                <span class="badge  badge-pill badge-secondary">Clip Art Type: @imageAnalysisView.ImageAnalysisResult.ImageType.ClipArtType</span>
-                <span class="badge  badge-pill badge-secondary">Line Drawing Type: @imageAnalysisView.ImageAnalysisResult.ImageType.LineDrawingType</span>
-                <hr />
-                <h5>Adult</h5>
-                
                     <p>
-                    <span class="badge badge-pill badge-info">Racy content: @imageAnalysisView.ImageAnalysisResult.Adult.IsRacyContent</span>
-                    <span class="badge badge-pill badge-danger">Racy score: @imageAnalysisView.ImageAnalysisResult.Adult.RacyScore.ToString("P")</span>
+                        <span class="badge badge-pill badge-info">Racy content: @imageAnalysisView.ImageAnalysisResult.Adult.IsRacyContent</span>
+                        <span class="badge badge-pill badge-danger">Racy score: @imageAnalysisView.ImageAnalysisResult.Adult.RacyScore.ToString("P")</span>
                     </p>
                     <p>
-                    <span class="badge badge-pill badge-info">Adult content: @imageAnalysisView.ImageAnalysisResult.Adult.IsAdultContent</span>
-                    <span class="badge badge-pill badge-danger">Adult score: @imageAnalysisView.ImageAnalysisResult.Adult.AdultScore.ToString("P")</span>
+                        <span class="badge badge-pill badge-info">Adult content: @imageAnalysisView.ImageAnalysisResult.Adult.IsAdultContent</span>
+                        <span class="badge badge-pill badge-danger">Adult score: @imageAnalysisView.ImageAnalysisResult.Adult.AdultScore.ToString("P")</span>
                     </p>
                     <p>
-                    <span class="badge badge-pill badge-info">Violent content: @imageAnalysisView.ImageAnalysisResult.Adult.IsGoryContent</span>
-                    <span class="badge badge-pill badge-danger">Violent score: @imageAnalysisView.ImageAnalysisResult.Adult.GoreScore.ToString("P")</span>
+                        <span class="badge badge-pill badge-info">Violent content: @imageAnalysisView.ImageAnalysisResult.Adult.IsGoryContent</span>
+                        <span class="badge badge-pill badge-danger">Violent score: @imageAnalysisView.ImageAnalysisResult.Adult.GoreScore.ToString("P")</span>
                     </p>
                     <hr />
 
-            }
+                }
 
+            </div>
         </div>
-    </div>
-}
+    }
 </div>
 <script>
     function displayFileName(input) {

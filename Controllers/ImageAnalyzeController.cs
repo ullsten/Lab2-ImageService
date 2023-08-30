@@ -3,9 +3,11 @@ using Lab2_ImageService.Models.ViewModel;
 using Lab2_ImageService.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace Lab2_ImageService.Controllers
 {
@@ -31,36 +33,56 @@ namespace Lab2_ImageService.Controllers
 
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {
-            
-                string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
+            string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
 
-                if (!Directory.Exists(fullPath))
-                {
-                    Directory.CreateDirectory(fullPath);
-                }
+            if (!Directory.Exists(fullPath))
+            {
+                Directory.CreateDirectory(fullPath);
+            }
 
-                var formFile = fileUpload.FormFile;
+            var formFile = fileUpload.FormFile;
 
-                if(formFile.Length > 0)
+            if (formFile.Length > 0)
             {
                 var filePath = Path.Combine(fullPath, formFile.FileName);
                 ViewData["ImageUrl"] = formFile.FileName;
-                using(var stream = new FileStream(filePath, FileMode.Create))
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
                 }
-                //using service to analyze the image
+
+                // Using service to analyze the image
                 var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(filePath);
-                if(imageAnalysis.ImageAnalysisResult != null)
+
+                if (imageAnalysis.ImageAnalysisResult != null)
                 {
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
-                ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + "file uploaded successfull";
+
+                var thumbnailDirectory = Path.Combine(fullPath, "Thumbnails");
+                if (!Directory.Exists(thumbnailDirectory))
+                {
+                    Directory.CreateDirectory(thumbnailDirectory);
+                }
+                // Create a thumbnail
+                var thumbnailPath = Path.Combine(thumbnailDirectory, formFile.FileName);
+
+                //var thumbnailPath = Path.Combine(fullPath, "Thumbnails", formFile.FileName);
+                using (var thumbnailStream = new FileStream(thumbnailPath, FileMode.Create))
+                {
+                    var thumbnailSize = fileUpload.ThumbnailSize; // Get user input for thumbnail size
+                    await _computerVisionService.GenerateThumbnailAsync(filePath, thumbnailStream, thumbnailSize);
+                }
+
+                ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
             }
 
             return View("Index");
         }
+
     }
 }
