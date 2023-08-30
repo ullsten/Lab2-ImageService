@@ -61,15 +61,15 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                var thumbnailWidth = fileUpload.ThumbnailWidth;
-                var thumbnailHeight = fileUpload.ThumbnailHeight;
+                if (fileUpload.CreateThumbnail) // Check if checkbox is checked
+                {
+                    await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                }
 
-                await _computerVisionService.GetThumbnail(filePath, thumbnailWidth, thumbnailHeight);
                 ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
             }
 
             return View("Index");
         }
-
     }
 }

@@ -8,9 +8,15 @@ namespace Lab2_ImageService.Models
         [Required]
         [DisplayName("File")]
         public IFormFile FormFile { get; set; }
-        public int ThumbnailSize { get; set; } // Add this property
+
+        [DisplayName("Width")]
         public int ThumbnailWidth { get; set; }
+
+        [DisplayName("Height")]
         public int ThumbnailHeight { get; set; }
+
+        public bool CreateThumbnail { get; set; }
+
         public string SuccessMessage { get; set; }
     }
 }
