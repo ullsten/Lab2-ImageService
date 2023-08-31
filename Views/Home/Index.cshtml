@@ -2,7 +2,29 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="section">
+    <div class="centered">
+        <div class="button-container">
+            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>
+            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Face AI</a>
+            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Explore AI</a>
+        </div>
+        <div class="cell-wrapper">
+            <div class="cell-core"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" class="cell">
+                <lineargradient id="cell-gradient" x1="50%" y1="0%" x2="50%" y2="100%">
+                    <stop id="startGradient" offset="0%">
+                        <animate id="startGradientAnimation" attributeName="stop-color" repeatCount="indefinite"></animate>
+                    </stop>
+                    <stop id="endGradient" offset="100%">
+                        <animate id="endGradientAnimation" attributeName="stop-color" repeatCount="indefinite"></animate>
+                    </stop>
+                </lineargradient>
+                <path class="cell-path" fill="url('#cell-gradient')"></path>
+            </svg>
+        </div>
+    </div>
 </div>
+
+
+

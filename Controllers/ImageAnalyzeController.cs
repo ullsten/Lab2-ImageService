@@ -34,8 +34,10 @@ namespace Lab2_ImageService.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {
+            //path to save uploaded images
             string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
 
+            //CHeck if directory exists or not, create if needed
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
@@ -61,7 +63,8 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                if (fileUpload.CreateThumbnail) // Check if checkbox is checked
+                // Check if checkbox is checked(true) then create thumbnail
+                if (fileUpload.CreateThumbnail) 
                 {
                     await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
                 }
