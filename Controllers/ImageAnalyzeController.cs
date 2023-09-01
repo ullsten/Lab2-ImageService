@@ -34,19 +34,19 @@ namespace Lab2_ImageService.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {
-            //path to save uploaded images
+            // Path to save uploaded images
             string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
 
-            //CHeck if directory exists or not, create if needed
+            // Check if directory exists or not, create if needed
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
             }
 
-            var formFile = fileUpload.FormFile;
-
-            if (formFile.Length > 0)
+            if (fileUpload.LocalImageFile != null && fileUpload.LocalImageFile.Length > 0)
             {
+                // User uploaded a local image file
+                var formFile = fileUpload.LocalImageFile;
                 var filePath = Path.Combine(fullPath, formFile.FileName);
                 ViewData["ImageUrl"] = formFile.FileName;
 
@@ -63,13 +63,11 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                //not working inside if statement ??
-               // await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
                 // Check if checkbox is checked(true) then create thumbnail
                 try
                 {
                     await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                    ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully";
                 }
                 catch (Exception ex)
                 {
@@ -77,13 +75,34 @@ namespace Lab2_ImageService.Controllers
                     // Log the exception for further diagnosis
                     _logger.LogError(ex, "Error generating thumbnail");
                 }
+            }
+            else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
+            {
+                // User provided an image URL
+                string imageUrl = fileUpload.ImageUrl;
 
+                // Using service to analyze the image from the URL
+                try
+                {
+                    var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(imageUrl);
 
+                    if (imageAnalysis.ImageAnalysisResult != null)
+                    {
+                        ViewData["ImageAnalysisViewModel"] = imageAnalysis;
+                    }
 
-                ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
+                    ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
+                }
+                catch (Exception ex)
+                {
+                    ViewData["ErrorMessage"] = "Error analyzing image from URL: " + ex.Message;
+                    // Log the exception for further diagnosis
+                    _logger.LogError(ex, "Error analyzing image from URL");
+                }
             }
 
             return View("Index");
         }
+
     }
 }

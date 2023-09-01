@@ -14,16 +14,17 @@
 
         @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
-            @*
-        <div class="form-group">
-        <label for="imageUrl"></label>
-        <input type="url" class="form-control" id="imageUrl" name="imageUrl" placeholder="Enter image URL">
-        </div> *@
+            
+            <div class="form-group">
+                <label for="imageFile">Choose a local image file:</label>
+                <input type="file" class="form-control-file" id="imageFile" name="LocalImageFile" accept=".jpg, .jpeg, .png">
+            </div>
 
             <div class="form-group">
-                <label for="imageFile">Choose an image:</label>
-                <input type="file" class="form-control-file" id="imageFile" name="FormFile" accept=".jpg, .jpeg, .png" required>
+                <label for="imageUrl">OR Enter an image URL:</label>
+                <input type="text" class="form-control" id="imageUrl" name="ImageUrl" placeholder="Enter image URL">
             </div>
+
             <hr />
 
             <div class="form-group">

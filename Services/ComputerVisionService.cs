@@ -40,30 +40,92 @@ namespace Lab2_ImageService.Services
             };
             return client;
         }
-        public async Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageFile)
+        //public async Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageFile)
+        //{
+        //    try
+        //    {
+        //        ComputerVisionClient client = Authenticate();
+
+        //        List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
+        //        {
+        //                VisualFeatureTypes.Categories,
+        //                VisualFeatureTypes.Description,
+        //                VisualFeatureTypes.Faces,
+        //                VisualFeatureTypes.ImageType,
+        //                VisualFeatureTypes.Tags,
+        //                VisualFeatureTypes.Adult,
+        //                VisualFeatureTypes.Color,
+        //                VisualFeatureTypes.Brands,
+        //                VisualFeatureTypes.Objects,
+        //        };
+
+        //        ImageAnalysis results;
+
+        //        using (Stream imageStream = File.OpenRead(imageFile))
+        //        {
+        //            results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+        //        }
+
+        //        // Process categories and landmarks
+        //        List<LandmarksModel> landmarks = new List<LandmarksModel>();
+        //        foreach (var category in results.Categories)
+        //        {
+        //            if (category.Detail?.Landmarks != null)
+        //            {
+        //                landmarks.AddRange(category.Detail.Landmarks);
+        //            }
+        //        }
+        //        // Create the view model and set the results
+        //        ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
+        //        imageAnalysis.ImageAnalysisResult = results;
+        //        imageAnalysis.Landmarks = landmarks; // You might need to adjust this based on your model structure
+
+        //        return imageAnalysis;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "An error occurred while analyzing the image.");
+        //        throw; // Re-throw the exception after logging
+        //    }
+        //}
+
+        public async Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageFileOrUrl)
         {
             try
             {
                 ComputerVisionClient client = Authenticate();
 
                 List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
-                {
-                        VisualFeatureTypes.Categories,
-                        VisualFeatureTypes.Description,
-                        VisualFeatureTypes.Faces,
-                        VisualFeatureTypes.ImageType,
-                        VisualFeatureTypes.Tags,
-                        VisualFeatureTypes.Adult,
-                        VisualFeatureTypes.Color,
-                        VisualFeatureTypes.Brands,
-                        VisualFeatureTypes.Objects,
-                };
+        {
+            VisualFeatureTypes.Categories,
+            VisualFeatureTypes.Description,
+            VisualFeatureTypes.Faces,
+            VisualFeatureTypes.ImageType,
+            VisualFeatureTypes.Tags,
+            VisualFeatureTypes.Adult,
+            VisualFeatureTypes.Color,
+            VisualFeatureTypes.Brands,
+            VisualFeatureTypes.Objects,
+        };
 
                 ImageAnalysis results;
 
-                using (Stream imageStream = File.OpenRead(imageFile))
+                // Check if the input is a URL or a local file path
+                if (Uri.IsWellFormedUriString(imageFileOrUrl, UriKind.Absolute))
                 {
-                    results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+                    // Input is a URL, download the image from the URL
+                    using (Stream imageStream = new WebClient().OpenRead(imageFileOrUrl))
+                    {
+                        results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+                    }
+                }
+                else
+                {
+                    // Input is a local file path, open the image file
+                    using (Stream imageStream = File.OpenRead(imageFileOrUrl))
+                    {
+                        results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+                    }
                 }
 
                 // Process categories and landmarks
@@ -75,6 +137,7 @@ namespace Lab2_ImageService.Services
                         landmarks.AddRange(category.Detail.Landmarks);
                     }
                 }
+
                 // Create the view model and set the results
                 ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
                 imageAnalysis.ImageAnalysisResult = results;
@@ -88,6 +151,7 @@ namespace Lab2_ImageService.Services
                 throw; // Re-throw the exception after logging
             }
         }
+
 
         public async Task GetThumbnail(string imageFile, int width, int height)
         {
