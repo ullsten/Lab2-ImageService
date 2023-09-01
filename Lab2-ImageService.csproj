@@ -25,4 +25,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Thumbnails\" />
+    <Folder Include="wwwroot\UploadImages\" />
+  </ItemGroup>
 </Project>

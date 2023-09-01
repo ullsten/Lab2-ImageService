@@ -81,23 +81,33 @@ namespace Lab2_ImageService.Controllers
                 // User provided an image URL
                 string imageUrl = fileUpload.ImageUrl;
 
-                // Using service to analyze the image from the URL
-                try
+                // Download the image from the URL and save it locally
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(imageUrl);
+                    var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
+                    var fileName = Path.GetFileName(new Uri(imageUrl).LocalPath);
+                    var localImagePath = Path.Combine(fullPath, fileName);
+
+                    using (var fileStream = new FileStream(localImagePath, FileMode.Create))
+                    {
+                        await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
+                    }
+
+                    // Using service to analyze the locally saved image
+                    var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(localImagePath);
 
                     if (imageAnalysis.ImageAnalysisResult != null)
                     {
                         ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                         ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
-                        ViewData["ImageUrl"] = imageUrl; // Pass the URL to the view
+                        ViewData["ImageUrl"] = imageUrl; // Pass the local image path to the view
                     }
-                }
-                catch (Exception ex)
-                {
-                    ViewData["ErrorMessage"] = "Error analyzing image from URL: " + ex.Message;
-                    // Log the exception for further diagnosis
-                    _logger.LogError(ex, "Error analyzing image from URL");
+
+                    // Generate a thumbnail from the locally saved image
+                    await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+
+                    // Log success
+                    _logger.LogInformation("Thumbnail generated successfully from URL: {0}", imageUrl);
                 }
             }
 

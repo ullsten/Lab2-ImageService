@@ -153,21 +153,34 @@ namespace Lab2_ImageService.Services
         }
 
 
-        public async Task GetThumbnail(string imageFile, int width, int height)
+        public async Task GetThumbnail(string imageFileOrUrl, int width, int height)
         {
-            ComputerVisionClient client = Authenticate();
-
-            Debug.WriteLine("Generating thumbnail");
-
-            // Generate a thumbnail
-            using (var imageData = File.OpenRead(imageFile))
+            using (HttpClient httpClient = new HttpClient())
             {
+                Stream imageStream;
+
+                if (Uri.IsWellFormedUriString(imageFileOrUrl, UriKind.Absolute))
+                {
+                    // ImageFileOrUrl is a valid URL, download the image
+                    byte[] imageBytes = await httpClient.GetByteArrayAsync(imageFileOrUrl);
+                    imageStream = new MemoryStream(imageBytes);
+                }
+                else
+                {
+                    // ImageFileOrUrl is a local file path, open it
+                    imageStream = File.OpenRead(imageFileOrUrl);
+                }
+
+                // Generate a thumbnail from the image stream
+                ComputerVisionClient client = Authenticate();
+                Debug.WriteLine("Generating thumbnail");
+
                 // Get thumbnail data
-                var thumbnailStream = await client.GenerateThumbnailInStreamAsync(width, height, imageData, true);
+                var thumbnailStream = await client.GenerateThumbnailInStreamAsync(width, height, imageStream, true);
 
                 // Determine the full path to save the thumbnail
-                string originalFileName = Path.GetFileNameWithoutExtension(imageFile); // Get the original file name without extension
-                string thumbnailFileName = $"{originalFileName}_thumbnail.png"; // Add "_thumbnail" to the original file name
+                string originalFileName = Path.GetFileNameWithoutExtension(imageFileOrUrl);
+                string thumbnailFileName = $"{originalFileName}_thumbnail.png";
                 string thumbnailPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails", thumbnailFileName);
 
                 // Create the directory if it doesn't exist
@@ -178,7 +191,7 @@ namespace Lab2_ImageService.Services
                     Directory.CreateDirectory(thumbnailDirectory);
                 }
 
-                // Save thumbnail image
+                // Save the thumbnail image
                 using (Stream thumbnailFile = File.Create(thumbnailPath))
                 {
                     await thumbnailStream.CopyToAsync(thumbnailFile);
@@ -187,5 +200,6 @@ namespace Lab2_ImageService.Services
                 Debug.WriteLine($"Thumbnail saved in {thumbnailPath}");
             }
         }
+
     }
 }
