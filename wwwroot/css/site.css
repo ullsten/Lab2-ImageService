@@ -7,21 +7,22 @@
 @import url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/wtf-forms.css);
 
 
-html {
+/*html {
     position: relative;
     min-height: 100%;
-}
+}*/
 
 body {
     margin-bottom: 60px;
-    /*background-color: rgb(12, 11, 11);*/
-    /*background-image: url(/images/pexels-lj-2085831.jpg);*/
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100vh;
+
+    background: radial-gradient( circle at 50% 50%, var(--background-color-1), var(--background-color-2) );
+    /*height: 100vh;*/
     /*background-position: center;*/
 }
+
 .button-container2 {
     display: flex;
     flex-direction: row;
@@ -43,38 +44,12 @@ body {
     }
 }
 
-/*.overlay {
-    background-color: rgb(86, 120, 157, 0.5);
-    margin-top: 58px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}*/
-
-/*.content {
-    z-index: 1;
-    color: white;
-    text-align: center;
-}*/
-
-/*.footer {
-    background-color: rgb(0, 0, 0, 0.8);*/ /* Change the opacity value (0.5) as needed */
-    /*position: absolute;*/
-    /*bottom: 0;*/
-    /*width: 100%;
-    height: 300px;
-    white-space: nowrap;*/
-    /*line-height: 60px;*/ /* Vertically center the text there */
-/*}*/
-
-
 .analysisResult {
     border-radius: 5px 5px 5px 5px;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
     padding: 5px;
     background: url("https://newevolutiondesigns.com/images/freebies/cool-wallpaper-3.jpg"), linear-gradient(233deg, #e56420, #c22525, #3d9c31, #37bbde);
+    background-color: gray;
     width: 100%;
     background-size: cover;
     background-blend-mode: hard-light;
@@ -126,7 +101,7 @@ body {
 }
 
 .thumbnail-form {
-    width: 100px;
+    /*width: 100px;*/
 /*    margin-left:auto;
     margin-right:auto;*/
 }

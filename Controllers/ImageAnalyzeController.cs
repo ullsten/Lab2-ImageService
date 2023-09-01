@@ -63,11 +63,22 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
+                //not working inside if statement ??
+               // await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
                 // Check if checkbox is checked(true) then create thumbnail
-                if (fileUpload.CreateThumbnail) 
+                try
                 {
                     await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                    ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
                 }
+                catch (Exception ex)
+                {
+                    ViewData["ErrorMessage"] = "Error generating thumbnail: " + ex.Message;
+                    // Log the exception for further diagnosis
+                    _logger.LogError(ex, "Error generating thumbnail");
+                }
+
+
 
                 ViewData["SuccessMessage"] = fileUpload.FormFile.FileName.ToString() + " file uploaded successfully";
             }

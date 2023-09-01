@@ -9,11 +9,9 @@
 }
 
 body {
-    display: grid;
     place-items: center;
     min-height: 100vh;
     margin: 0;
-    background: radial-gradient( circle at 50% 50%, var(--background-color-1), var(--background-color-2) );
 }
 
 @keyframes swaying {

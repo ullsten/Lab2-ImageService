@@ -47,17 +47,17 @@ namespace Lab2_ImageService.Services
                 ComputerVisionClient client = Authenticate();
 
                 List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
-        {
-            VisualFeatureTypes.Categories,
-            VisualFeatureTypes.Description,
-            VisualFeatureTypes.Faces,
-            VisualFeatureTypes.ImageType,
-            VisualFeatureTypes.Tags,
-            VisualFeatureTypes.Adult,
-            VisualFeatureTypes.Color,
-            VisualFeatureTypes.Brands,
-            VisualFeatureTypes.Objects,
-        };
+                {
+                        VisualFeatureTypes.Categories,
+                        VisualFeatureTypes.Description,
+                        VisualFeatureTypes.Faces,
+                        VisualFeatureTypes.ImageType,
+                        VisualFeatureTypes.Tags,
+                        VisualFeatureTypes.Adult,
+                        VisualFeatureTypes.Color,
+                        VisualFeatureTypes.Brands,
+                        VisualFeatureTypes.Objects,
+                };
 
                 ImageAnalysis results;
 
@@ -108,6 +108,7 @@ namespace Lab2_ImageService.Services
 
                 // Create the directory if it doesn't exist
                 string thumbnailDirectory = Path.GetDirectoryName(thumbnailPath);
+
                 if (!Directory.Exists(thumbnailDirectory))
                 {
                     Directory.CreateDirectory(thumbnailDirectory);
@@ -116,7 +117,7 @@ namespace Lab2_ImageService.Services
                 // Save thumbnail image
                 using (Stream thumbnailFile = File.Create(thumbnailPath))
                 {
-                    thumbnailStream.CopyTo(thumbnailFile);
+                    await thumbnailStream.CopyToAsync(thumbnailFile);
                 }
 
                 Debug.WriteLine($"Thumbnail saved in {thumbnailPath}");
