@@ -17,7 +17,7 @@ namespace Lab2_ImageService.Controllers
         private readonly IComputerVisionService _computerVisionService;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ImageAnalyzeController(IComputerVisionService computerVisionService, ILogger <ImageAnalyzeController> logger, IWebHostEnvironment hostEnvironment)
+        public ImageAnalyzeController(IComputerVisionService computerVisionService, ILogger<ImageAnalyzeController> logger, IWebHostEnvironment hostEnvironment)
         {
             _logger = logger;
             _computerVisionService = computerVisionService;
