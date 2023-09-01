@@ -103,9 +103,20 @@ namespace Lab2_ImageService.Controllers
                         ViewData["ImageUrl"] = imageUrl; // Pass the local image path to the view
                     }
 
-                    // Generate a thumbnail from the locally saved image
-                    await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                    // Check if checkbox is checked(true) then create thumbnail
+                    try
+                    {
 
+                        // Generate a thumbnail from the locally saved image
+                        await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                        //ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully";
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewData["ErrorMessage"] = "Error generating thumbnail: " + ex.Message;
+                        // Log the exception for further diagnosis
+                        _logger.LogError(ex, "Error generating thumbnail");
+                    }
                     // Log success
                     _logger.LogInformation("Thumbnail generated successfully from URL: {0}", imageUrl);
                 }
