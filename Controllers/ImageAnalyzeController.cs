@@ -7,10 +7,12 @@ using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Web.Helpers;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Drawing;
 using Color = System.Drawing.Color;
+using FileUpload = Lab2_ImageService.Models.FileUpload;
 using Image = System.Drawing.Image;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -31,6 +33,21 @@ namespace Lab2_ImageService.Controllers
 
         public IActionResult Index()
         {
+            //Get folders from webRootPath
+            string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+            string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
+            string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
+
+            //Create list to hold images
+            List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
+            List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
+            List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
+
+            //Pass images to ViewData to use in view
+            ViewData["ObjectsImages"] = objectsImages;
+            ViewData["ThumbnailsImages"] = thumbnailsImages;
+            ViewData["UploadedImages"] = uploadedImages;
+
             //show success message after uploading image
             ViewData["SuccessMessage"] = "";
             return View();

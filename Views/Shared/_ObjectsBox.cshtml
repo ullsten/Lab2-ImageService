@@ -1,0 +1,29 @@
+﻿@{
+    var objectsImages = ViewData["ObjectsImages"] as List<string>;
+    var thumbnailsImages = ViewData["ThumbnailsImages"] as List<string>;
+    var uploadedImages = ViewData["UploadedImages"] as List<string>;
+}
+
+<h3>Objects Images:</h3>
+<select>
+    @foreach (var image in objectsImages)
+    {
+        <option value="@image">@image</option>
+    }
+</select>
+
+<h3>Thumbnails Images:</h3>
+<select>
+    @foreach (var image in thumbnailsImages)
+    {
+        <option value="@image">@image</option>
+    }
+</select>
+
+<h3>Uploaded Images:</h3>
+<select>
+    @foreach (var image in uploadedImages)
+    {
+        <option value="@image">@image</option>
+    }
+</select>

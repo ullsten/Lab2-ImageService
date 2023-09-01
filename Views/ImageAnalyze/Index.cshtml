@@ -11,7 +11,9 @@
         <div class="text-center m-3">
             <h4 class="text-white">Lab2 | Image Analysis with Azure cognitive service</h4>
         </div>
-
+        <div>
+            @Html.Partial("_ObjectsBox")
+        </div>
         @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
 

@@ -178,7 +178,7 @@ namespace Lab2_ImageService.Services
                 foreach (var detectedObject in analysis.Objects)
                 {
                     // Print object name
-                    Console.WriteLine($" -{detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
+                    Console.WriteLine($" - {detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
 
                     // Draw object bounding box
                     var r = detectedObject.Rectangle;
@@ -187,20 +187,13 @@ namespace Lab2_ImageService.Services
                     graphics.DrawString(detectedObject.ObjectProperty, font, brush, r.X, r.Y);
                 }
 
+                // Save annotated image with the same name as the input image
                 string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
-
-                // Check if directory exists or not, create if needed
-                if (!Directory.Exists(objectsFolderPath))
-                {
-                    Directory.CreateDirectory(objectsFolderPath);
-                }
-
-                // Save annotated image in the Objects folder
-                string outputFilePath = Path.Combine(objectsFolderPath, "objects.jpg");
+                string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_annotated.jpg";
+                string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
                 image.Save(outputFilePath);
                 Console.WriteLine("Results saved in " + outputFilePath);
             }
         }
-
     }
 }
