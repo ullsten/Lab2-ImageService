@@ -7,5 +7,7 @@ namespace Lab2_ImageService.Services
     {
         Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageUrl);
         Task GetThumbnail(string imageFile, int width, int height);
+        void ProcessImage(ImageAnalysis analysis, string imageFile);
+        //void ProcessImage(ImageAnalysisViewModel imageAnalysis, string localImagePath);
     }
 }

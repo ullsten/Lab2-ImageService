@@ -4,10 +4,15 @@ using Lab2_ImageService.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Drawing;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Lab2_ImageService.Controllers
 {
@@ -45,7 +50,7 @@ namespace Lab2_ImageService.Controllers
 
             if (fileUpload.LocalImageFile != null && fileUpload.LocalImageFile.Length > 0)
             {
-                // User uploaded a local image file
+                // User upload a local image file
                 var formFile = fileUpload.LocalImageFile;
                 var filePath = Path.Combine(fullPath, formFile.FileName);
                 ViewData["ImageUrl"] = formFile.FileName;
@@ -106,10 +111,8 @@ namespace Lab2_ImageService.Controllers
                     // Check if checkbox is checked(true) then create thumbnail
                     try
                     {
-
-                        // Generate a thumbnail from the locally saved image
                         await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        //ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully";
+                        ViewData["SuccessMessage"] = "Thumbnail generated successfully from URL: " + imageUrl;
                     }
                     catch (Exception ex)
                     {
@@ -117,13 +120,10 @@ namespace Lab2_ImageService.Controllers
                         // Log the exception for further diagnosis
                         _logger.LogError(ex, "Error generating thumbnail");
                     }
-                    // Log success
-                    _logger.LogInformation("Thumbnail generated successfully from URL: {0}", imageUrl);
                 }
             }
 
             return View("Index");
         }
-
     }
 }

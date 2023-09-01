@@ -1,17 +1,15 @@
 ﻿using Lab2_ImageService.Models.ViewModel;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Microsoft.Extensions.Hosting;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using Image = SixLabors.ImageSharp.Image;
+
+using System.Drawing;
+using Rectangle = System.Drawing.Rectangle;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
+using Microsoft.AspNetCore.Http;
 
 namespace Lab2_ImageService.Services
 {
@@ -40,54 +38,6 @@ namespace Lab2_ImageService.Services
             };
             return client;
         }
-        //public async Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageFile)
-        //{
-        //    try
-        //    {
-        //        ComputerVisionClient client = Authenticate();
-
-        //        List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
-        //        {
-        //                VisualFeatureTypes.Categories,
-        //                VisualFeatureTypes.Description,
-        //                VisualFeatureTypes.Faces,
-        //                VisualFeatureTypes.ImageType,
-        //                VisualFeatureTypes.Tags,
-        //                VisualFeatureTypes.Adult,
-        //                VisualFeatureTypes.Color,
-        //                VisualFeatureTypes.Brands,
-        //                VisualFeatureTypes.Objects,
-        //        };
-
-        //        ImageAnalysis results;
-
-        //        using (Stream imageStream = File.OpenRead(imageFile))
-        //        {
-        //            results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
-        //        }
-
-        //        // Process categories and landmarks
-        //        List<LandmarksModel> landmarks = new List<LandmarksModel>();
-        //        foreach (var category in results.Categories)
-        //        {
-        //            if (category.Detail?.Landmarks != null)
-        //            {
-        //                landmarks.AddRange(category.Detail.Landmarks);
-        //            }
-        //        }
-        //        // Create the view model and set the results
-        //        ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
-        //        imageAnalysis.ImageAnalysisResult = results;
-        //        imageAnalysis.Landmarks = landmarks; // You might need to adjust this based on your model structure
-
-        //        return imageAnalysis;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "An error occurred while analyzing the image.");
-        //        throw; // Re-throw the exception after logging
-        //    }
-        //}
 
         public async Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageFileOrUrl)
         {
@@ -96,17 +46,17 @@ namespace Lab2_ImageService.Services
                 ComputerVisionClient client = Authenticate();
 
                 List<VisualFeatureTypes?> features = new List<VisualFeatureTypes?>()
-        {
-            VisualFeatureTypes.Categories,
-            VisualFeatureTypes.Description,
-            VisualFeatureTypes.Faces,
-            VisualFeatureTypes.ImageType,
-            VisualFeatureTypes.Tags,
-            VisualFeatureTypes.Adult,
-            VisualFeatureTypes.Color,
-            VisualFeatureTypes.Brands,
-            VisualFeatureTypes.Objects,
-        };
+                {
+                     VisualFeatureTypes.Categories,
+                     VisualFeatureTypes.Description,
+                     VisualFeatureTypes.Faces,
+                     VisualFeatureTypes.ImageType,
+                     VisualFeatureTypes.Tags,
+                     VisualFeatureTypes.Adult,
+                     VisualFeatureTypes.Color,
+                     VisualFeatureTypes.Brands,
+                     VisualFeatureTypes.Objects,
+                };
 
                 ImageAnalysis results;
 
@@ -138,6 +88,17 @@ namespace Lab2_ImageService.Services
                     }
                 }
 
+                try
+                {
+                    ProcessImage(results, imageFileOrUrl);
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception for further diagnosis
+                    _logger.LogError(ex, "Error generating thumbnail");
+                }
+                
+
                 // Create the view model and set the results
                 ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
                 imageAnalysis.ImageAnalysisResult = results;
@@ -151,7 +112,6 @@ namespace Lab2_ImageService.Services
                 throw; // Re-throw the exception after logging
             }
         }
-
 
         public async Task GetThumbnail(string imageFileOrUrl, int width, int height)
         {
@@ -198,6 +158,47 @@ namespace Lab2_ImageService.Services
                 }
 
                 Debug.WriteLine($"Thumbnail saved in {thumbnailPath}");
+            }
+        }
+
+        public void ProcessImage(ImageAnalysis analysis, string imageFile)
+        {
+            // Get objects in the image
+            if (analysis.Objects.Count > 0)
+            {
+                Console.WriteLine("Objects in image:");
+
+                // Prepare image for drawing
+                Image image = Image.FromFile(imageFile);
+                Graphics graphics = Graphics.FromImage(image);
+                Pen pen = new Pen(Color.Cyan, 3);
+                Font font = new Font("Arial", 16);
+                SolidBrush brush = new SolidBrush(Color.Black);
+
+                foreach (var detectedObject in analysis.Objects)
+                {
+                    // Print object name
+                    Console.WriteLine($" -{detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
+
+                    // Draw object bounding box
+                    var r = detectedObject.Rectangle;
+                    Rectangle rect = new Rectangle(r.X, r.Y, r.W, r.H);
+                    graphics.DrawRectangle(pen, rect);
+                    graphics.DrawString(detectedObject.ObjectProperty, font, brush, r.X, r.Y);
+                }
+
+                string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+
+                // Check if directory exists or not, create if needed
+                if (!Directory.Exists(objectsFolderPath))
+                {
+                    Directory.CreateDirectory(objectsFolderPath);
+                }
+
+                // Save annotated image in the Objects folder
+                string outputFilePath = Path.Combine(objectsFolderPath, "objects.jpg");
+                image.Save(outputFilePath);
+                Console.WriteLine("Results saved in " + outputFilePath);
             }
         }
 
