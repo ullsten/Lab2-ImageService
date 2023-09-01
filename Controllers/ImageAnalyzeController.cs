@@ -89,9 +89,9 @@ namespace Lab2_ImageService.Controllers
                     if (imageAnalysis.ImageAnalysisResult != null)
                     {
                         ViewData["ImageAnalysisViewModel"] = imageAnalysis;
+                        ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
+                        ViewData["ImageUrl"] = imageUrl; // Pass the URL to the view
                     }
-
-                    ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
                 }
                 catch (Exception ex)
                 {

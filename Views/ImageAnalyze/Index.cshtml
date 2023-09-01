@@ -55,9 +55,20 @@
 
                     @if (ViewData["ImageUrl"] != null)
                     {
-                        var imageUrl = Convert.ToString(ViewData["ImageUrl"]);
-                        <img src="~/UploadImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
+                        var imageUrl = ViewData["ImageUrl"].ToString();
+
+                        @if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+                        {
+                            // Display image from URL
+                            <img src="@imageUrl" alt="Image from URL" class="img-thumbnail" />
+                        }
+                        else
+                        {
+                            // Display image from local file
+                            <img src="~/UploadImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
+                        }
                     }
+
 
                 </div>
                 <div class="col-sm-6 small">
