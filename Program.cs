@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Lab2_ImageService.Services;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +10,7 @@ namespace Lab2_ImageService
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            Env.Load();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

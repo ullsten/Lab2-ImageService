@@ -1,5 +1,5 @@
 ﻿:root {
-    /*--background-color-1: #283944;*/
+    --background-color-1: #283944;
     --background-color-2: #000;
     --primary-color-1: #01ff89;
     --primary-color-2: #7a5fff;
@@ -99,3 +99,4 @@ body {
     justify-content: center;
     align-items: center;
 }*/
+

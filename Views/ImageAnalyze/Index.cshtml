@@ -5,6 +5,12 @@
     ViewData["Title"] = "Home page";
 }
 
+@{
+    var objectsImages = ViewData["ObjectsImages"] as List<string>;
+    var thumbnailsImages = ViewData["ThumbnailsImages"] as List<string>;
+    var uploadedImages = ViewData["UploadedImages"] as List<string>;
+}
+
 <div class="content">
     <div class="analysisResult">
 
@@ -12,8 +18,13 @@
             <h4 class="text-white">Lab2 | Image Analysis with Azure cognitive service</h4>
         </div>
         <div>
-            @Html.Partial("_ObjectsBox")
+            <div>
+                <button id="openModal" data-toggle="modal" data-target="modalPopup">All images</button>
+                @* @Html.Partial("_ObjectsBox") *@
+            </div>
+
         </div>
+
         @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
 
@@ -29,13 +40,13 @@
 
             <hr />
 
-            <div class="form-group">
+            <div class="form-check">
                 <label for="createThumbnail" class="">Create Thumbnail:</label>
                 <input type="checkbox" class="" id="createThumbnail" name="CreateThumbnail">
             </div>
 
             <div class="form-group">
-                <label for="thumbnailWidth">Thumbnail Width (in pixels):</label>
+                <label for="ThumbnailWidth">Thumbnail Width (in pixels):</label>
                 <input type="number" class="thumbnail-form form-control" id="thumbnailWidth" name="ThumbnailWidth">
             </div>
 
@@ -50,6 +61,19 @@
             {
                 <span class="badge badge-success">@ViewData["SuccessMessage"]</span>
             }
+
+            <script>
+                $(document).ready(function () {
+                    $('form').on('change', ':checkbox', function () {
+                        if (this.checked) {
+                            $(this).val(true);
+                        }
+                        else {
+                            $(this).val(false);
+                        }
+                    });
+                });
+            </script>
 
             @*Displaying Analysis results*@
             <div class=" row">
@@ -67,7 +91,7 @@
                         else
                         {
                             // Display image from local file
-                            <img src="~/UploadImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
+                            <img src="~/UploadedImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
                         }
                     }
 
@@ -178,3 +202,78 @@
         }
     </div>
 </div>
+
+@* script for modal content*@
+<script src="~/js/modalScript.js"></script>
+
+@* Modal for all images uploaded/Analyzed *@
+<div id="modalPopup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalPopupLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">All images</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Uploaded Images:</h3>
+                <select id="uploadedDropdown" onchange="showImage(this.value, 'uploadedImages')">
+                    <option value="Option1">Uploaded</option>
+                    @foreach (var image in uploadedImages)
+                    {
+                        <option value="UploadedImages/@image">@image</option>
+                    }
+
+                </select>
+
+                <h3>Thumbnails Images:</h3>
+                <select id="thumbnailsDropdown" onchange="showImage(this.value, 'thumbnails')">
+                    <option>Thumbnails</option>
+                    @foreach (var image in thumbnailsImages)
+                    {
+                        <option value="Thumbnails/@image">@image</option>
+                    }
+                </select>
+
+                <h3>Objects Images:</h3>
+                <select id="objectsDropdown" onchange="showImage(this.value, 'objects')">
+                    <option>Bounding boxes</option>
+                    @foreach (var image in objectsImages)
+                    {
+                        <option value="Objects/@image">@image</option>
+                    }
+
+                </select>
+                <hr />
+                <div class="modal-body">
+                    <div class="text-center">
+                        <!-- Download link -->
+                        <a id="downloadLink" href="#" download="selectedImage.jpg" style="display: none;">Download Image</a>
+                    </div>
+                    <hr />
+                    <!-- The selected image will fit inside the modal -->
+                    <img id="selectedImage" class="modalImage img-fluid" src="" alt="Selected Image" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkbox = document.getElementById("addThumbnail");
+
+        checkbox.addEventListener("change", function () {
+            if (checkbox.checked) {
+                console.log("Checkbox is checked");
+            } else {
+                console.log("Checkbox is unchecked");
+            }
+        });
+    });
+</script>

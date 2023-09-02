@@ -1,20 +1,9 @@
 ﻿using Lab2_ImageService.Models;
 using Lab2_ImageService.Models.ViewModel;
 using Lab2_ImageService.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Web.Helpers;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Drawing;
-using Color = System.Drawing.Color;
-using FileUpload = Lab2_ImageService.Models.FileUpload;
-using Image = System.Drawing.Image;
-using Rectangle = System.Drawing.Rectangle;
+
 
 namespace Lab2_ImageService.Controllers
 {
@@ -33,31 +22,50 @@ namespace Lab2_ImageService.Controllers
 
         public IActionResult Index()
         {
-            //Get folders from webRootPath
-            string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
-            string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
-            string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
+            try
+            {
+                //Get folders from webRootPath
+                string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+                string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
+                string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
 
-            //Create list to hold images
-            List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
-            List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
-            List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
+                // Create the folders if they don't exist
+                Directory.CreateDirectory(objectsFolderPath);
+                Directory.CreateDirectory(thumbnailsFolderPath);
+                Directory.CreateDirectory(uploadedImagesFolderPath);
 
-            //Pass images to ViewData to use in view
-            ViewData["ObjectsImages"] = objectsImages;
-            ViewData["ThumbnailsImages"] = thumbnailsImages;
-            ViewData["UploadedImages"] = uploadedImages;
+                // Create list to hold images
+                List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
+                List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
+                List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
 
-            //show success message after uploading image
-            ViewData["SuccessMessage"] = "";
-            return View();
+                // Pass images to ViewData to use in view
+                ViewData["ObjectsImages"] = objectsImages;
+                ViewData["ThumbnailsImages"] = thumbnailsImages;
+                ViewData["UploadedImages"] = uploadedImages;
+
+                // Show success message after uploading image
+                ViewData["SuccessMessage"] = "";
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception here or log it for debugging purposes
+                // You can also display an error message to the user if needed
+                ViewData["ErrorMessage"] = "An error occurred while retrieving image data: " + ex.Message;
+
+                return View();
+            }
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {
             // Path to save uploaded images
-            string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadImages");
+            string fullPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
 
             // Check if directory exists or not, create if needed
             if (!Directory.Exists(fullPath))
@@ -85,18 +93,20 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                // Check if checkbox is checked(true) then create thumbnail
-                try
+                // Check if checkbox is checked(true)
+                if (fileUpload.CreateThumbnail)
                 {
+                    // Create thumbnail here if checkbox is checked
                     await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully";
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully with a thumbnail";
                 }
-                catch (Exception ex)
+                else
                 {
-                    ViewData["ErrorMessage"] = "Error generating thumbnail: " + ex.Message;
-                    // Log the exception for further diagnosis
-                    _logger.LogError(ex, "Error generating thumbnail");
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
                 }
+                Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox Local_IMG");
+                Debug.WriteLine(imageAnalysis.AddThumbnail + " Hello from checkbox URL");
+
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {
@@ -125,20 +135,36 @@ namespace Lab2_ImageService.Controllers
                         ViewData["ImageUrl"] = imageUrl; // Pass the local image path to the view
                     }
 
-                    // Check if checkbox is checked(true) then create thumbnail
-                    try
+                    // Check if checkbox is checked(true)
+                    if (imageAnalysis.AddThumbnail)
                     {
+                        // Create thumbnail here if checkbox is checked
                         await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        ViewData["SuccessMessage"] = "Thumbnail generated successfully from URL: " + imageUrl;
+                        ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully with a thumbnail";
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        ViewData["ErrorMessage"] = "Error generating thumbnail: " + ex.Message;
-                        // Log the exception for further diagnosis
-                        _logger.LogError(ex, "Error generating thumbnail");
+                        ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
                     }
+                    Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
+                    Debug.WriteLine(imageAnalysis.AddThumbnail + " Hello from checkbox URL");
+
                 }
             }
+
+            //did not need this before, but now and I don´t know why
+            // Repopulate the dropdown lists in ViewData
+            string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+            string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
+            string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
+
+            List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
+            List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
+            List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
+
+            ViewData["ObjectsImages"] = objectsImages;
+            ViewData["ThumbnailsImages"] = thumbnailsImages;
+            ViewData["UploadedImages"] = uploadedImages;
 
             return View("Index");
         }

@@ -12,13 +12,13 @@ namespace Lab2_ImageService.Models
 
         // Image URL input (optional)
         [DisplayName("Image URL")]
-        public string ImageUrl { get; set; }
-        public string ThumbnailFileName { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? ThumbnailFileName { get; set; }
 
         public bool CreateThumbnail { get; set; }
-        public int ThumbnailWidth { get; set; }
-        public int ThumbnailHeight { get; set; }
+        public int ThumbnailWidth { get; set; } = 1;
+        public int ThumbnailHeight { get; set; } = 1;
 
-        public string SuccessMessage { get; set; }
+        public string? SuccessMessage { get; set; }
     }
 }

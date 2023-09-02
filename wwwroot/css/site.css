@@ -32,6 +32,15 @@ body {
     justify-content:center;
 
 }
+.navbar-light .navbar-nav .nav-link:hover {
+    color: rgb(255, 106, 0); 
+}
+.navbar-light .navbar-nav .nav-link {
+    color: rgb(92, 135, 157); 
+}
+.navbar-light .navbar-nav .nav-link:active {
+    color: yellow; 
+}
 
 /* Hamburger menu */
 .navbar-toggler {
@@ -106,5 +115,7 @@ body {
     margin-right:auto;*/
 }
 
-
+.modalImage{
+    
+}
 

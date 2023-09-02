@@ -29,8 +29,13 @@ namespace Lab2_ImageService.Services
         //Sets subscriptionKey and endpoint
         public ComputerVisionClient Authenticate()
         {
+            //from appsettings.json
             string subscriptionKey = _configuration["CognitiveServiceKey"];
             string endpoint = _configuration["CognitiveServicesEndpoint"];
+
+            //from env file
+            //string subscriptionKey = Environment.GetEnvironmentVariable("COGNETIVE_SERVICE_KEY");
+            //string endpoint = Environment.GetEnvironmentVariable("COGNETIVE_SERVICE_ENDPOINT");
 
             ComputerVisionClient client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(subscriptionKey))
             {
@@ -189,7 +194,7 @@ namespace Lab2_ImageService.Services
 
                 // Save annotated image with the same name as the input image
                 string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
-                string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_annotated.jpg";
+                string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_object.jpg";
                 string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
                 image.Save(outputFilePath);
                 Console.WriteLine("Results saved in " + outputFilePath);
