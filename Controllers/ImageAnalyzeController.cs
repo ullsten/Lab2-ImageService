@@ -104,8 +104,8 @@ namespace Lab2_ImageService.Controllers
                 {
                     ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
                 }
+
                 Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox Local_IMG");
-                Debug.WriteLine(imageAnalysis.AddThumbnail + " Hello from checkbox URL");
 
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
@@ -136,18 +136,17 @@ namespace Lab2_ImageService.Controllers
                     }
 
                     // Check if checkbox is checked(true)
-                    if (imageAnalysis.AddThumbnail)
+                    if (fileUpload.CreateThumbnail)
                     {
                         // Create thumbnail here if checkbox is checked
                         await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully with a thumbnail";
+                        ViewData["SuccessMessage"] = " file uploaded successfully with a thumbnail";
                     }
                     else
                     {
                         ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
                     }
                     Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
-                    Debug.WriteLine(imageAnalysis.AddThumbnail + " Hello from checkbox URL");
 
                 }
             }
