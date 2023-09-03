@@ -128,8 +128,10 @@ namespace Lab2_ImageService.Controllers
                 using (HttpClient httpClient = new HttpClient())
                 {
                     var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
-                    var fileName = Path.GetFileName(new Uri(imageUrl).LocalPath);
-                    var localImagePath = Path.Combine(fullPath, fileName);
+
+                    // Generate a unique filename with a timestamp
+                    string timestampedFileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "_" + Path.GetFileName(new Uri(imageUrl).LocalPath);
+                    var localImagePath = Path.Combine(fullPath, timestampedFileName);
 
                     using (var fileStream = new FileStream(localImagePath, FileMode.Create))
                     {
@@ -139,7 +141,7 @@ namespace Lab2_ImageService.Controllers
                     // Create an ImageModel to hold image information
                     var imageModel = new ImageModel
                     {
-                        FileName = fileName,
+                        FileName = timestampedFileName,
                         FilePath = localImagePath,
                     };
 
@@ -150,7 +152,7 @@ namespace Lab2_ImageService.Controllers
                     {
                         ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                         ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
-                        ViewData["ImageUrl"] = imageUrl; // Pass the local image path to the view
+                        ViewData["ImageUrl"] = timestampedFileName; // Pass the timestamped image URL to the view
                     }
 
                     // Check if checkbox is checked(true)
@@ -158,7 +160,7 @@ namespace Lab2_ImageService.Controllers
                     {
                         // Create thumbnail here if checkbox is checked
                         await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        ViewData["SuccessMessage"] = " file uploaded successfully with a thumbnail";
+                        ViewData["SuccessMessage"] = "File uploaded successfully with a thumbnail";
                     }
                     else
                     {
@@ -168,6 +170,7 @@ namespace Lab2_ImageService.Controllers
                     Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
                 }
             }
+
 
             return View("Index");
         }
@@ -193,6 +196,7 @@ namespace Lab2_ImageService.Controllers
                     FileName = Path.GetFileName(filePath),
                     FilePath = filePath,
                 })
+                .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();
 
             List<ImageModel> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath)
@@ -201,6 +205,7 @@ namespace Lab2_ImageService.Controllers
                     FileName = Path.GetFileName(filePath),
                     FilePath = filePath,
                 })
+                .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();
 
             // Sort the uploadedImages list by parsing the date from the FileName
@@ -213,26 +218,31 @@ namespace Lab2_ImageService.Controllers
                 .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();
 
-            // Create a list to hold the latest analyzed images (uploaded, thumbnail, object)
-            var latestAnalyzedImages = new List<ImageModel>();
+            // Create a list to hold the latest analyzed images as tuples (image, category)
+            var latestAnalyzedImages = new List<(ImageModel Image, string Category)>();
 
             // Add the latest uploaded image, if available
-            if (uploadedImages.Any())
+            if (uploadedImages.Count > 0)
             {
-                latestAnalyzedImages.Add(uploadedImages.First());
+                latestAnalyzedImages.Add((uploadedImages.First(), "Uploaded"));
             }
 
             // Add the latest thumbnail image, if available
-            if (thumbnailsImages.Any())
+            if (thumbnailsImages.Count > 0)
             {
-                latestAnalyzedImages.Add(thumbnailsImages.First());
+                latestAnalyzedImages.Add((thumbnailsImages.First(), "Thumbnail"));
             }
 
             // Add the latest object image, if available
-            if (objectsImages.Any())
+            if (objectsImages.Count > 0)
             {
-                latestAnalyzedImages.Add(objectsImages.First());
+                latestAnalyzedImages.Add((objectsImages.First(), "Object"));
             }
+
+            // Pass the latest analyzed images to ViewData
+            ViewData["LatestAnalyzedImages"] = latestAnalyzedImages;
+
+
 
             // Pass ImageModel lists to ViewData to use in the view
             ViewData["ObjectsImages"] = objectsImages;
