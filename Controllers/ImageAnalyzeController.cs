@@ -2,8 +2,9 @@
 using Lab2_ImageService.Models.ViewModel;
 using Lab2_ImageService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
-
+using System.Globalization;
 
 namespace Lab2_ImageService.Controllers
 {
@@ -24,25 +25,25 @@ namespace Lab2_ImageService.Controllers
         {
             try
             {
-                //Get folders from webRootPath
-                string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
-                string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
-                string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
+                ////Get folders from webRootPath
+                //string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+                //string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
+                //string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
 
-                // Create the folders if they don't exist
-                Directory.CreateDirectory(objectsFolderPath);
-                Directory.CreateDirectory(thumbnailsFolderPath);
-                Directory.CreateDirectory(uploadedImagesFolderPath);
+                //// Create the folders if they don't exist
+                //Directory.CreateDirectory(objectsFolderPath);
+                //Directory.CreateDirectory(thumbnailsFolderPath);
+                //Directory.CreateDirectory(uploadedImagesFolderPath);
 
-                // Create list to hold images
-                List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
-                List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
-                List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
+                //// Create list to hold images
+                //List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
+                //List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
+                //List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
 
-                // Pass images to ViewData to use in view
-                ViewData["ObjectsImages"] = objectsImages;
-                ViewData["ThumbnailsImages"] = thumbnailsImages;
-                ViewData["UploadedImages"] = uploadedImages;
+                //// Pass images to ViewData to use in view
+                //ViewData["ObjectsImages"] = objectsImages;
+                //ViewData["ThumbnailsImages"] = thumbnailsImages;
+                //ViewData["UploadedImages"] = uploadedImages;
 
                 // Show success message after uploading image
                 ViewData["SuccessMessage"] = "";
@@ -77,13 +78,24 @@ namespace Lab2_ImageService.Controllers
             {
                 // User upload a local image file
                 var formFile = fileUpload.LocalImageFile;
-                var filePath = Path.Combine(fullPath, formFile.FileName);
-                ViewData["ImageUrl"] = formFile.FileName;
+
+                // Generate a unique filename with a timestamp
+                string timestampedFileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "_" + formFile.FileName;
+
+                var filePath = Path.Combine(fullPath, timestampedFileName);
+                ViewData["ImageUrl"] = timestampedFileName;
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await formFile.CopyToAsync(stream);
                 }
+
+                // Create an ImageModel to hold image information
+                var imageModel = new ImageModel
+                {
+                    FileName = timestampedFileName,
+                    FilePath = filePath,
+                };
 
                 // Using service to analyze the image
                 var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(filePath);
@@ -106,7 +118,6 @@ namespace Lab2_ImageService.Controllers
                 }
 
                 Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox Local_IMG");
-
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {
@@ -124,6 +135,13 @@ namespace Lab2_ImageService.Controllers
                     {
                         await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
                     }
+
+                    // Create an ImageModel to hold image information
+                    var imageModel = new ImageModel
+                    {
+                        FileName = fileName,
+                        FilePath = localImagePath,
+                    };
 
                     // Using service to analyze the locally saved image
                     var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(localImagePath);
@@ -146,26 +164,99 @@ namespace Lab2_ImageService.Controllers
                     {
                         ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
                     }
-                    Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
 
+                    Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
                 }
             }
 
-            //did not need this before, but now and I don´t know why
-            // Repopulate the dropdown lists in ViewData
+            return View("Index");
+        }
+
+
+        [HttpGet]
+        public IActionResult AnalyzedImages()
+        {
+            // Get folders from webRootPath
             string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
             string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
             string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
 
-            List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
-            List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
-            List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
+            // Create the folders if they don't exist
+            Directory.CreateDirectory(objectsFolderPath);
+            Directory.CreateDirectory(thumbnailsFolderPath);
+            Directory.CreateDirectory(uploadedImagesFolderPath);
 
+            // Create a list to hold ImageModel objects
+            List<ImageModel> objectsImages = Directory.GetFiles(objectsFolderPath)
+                .Select(filePath => new ImageModel
+                {
+                    FileName = Path.GetFileName(filePath),
+                    FilePath = filePath,
+                })
+                .ToList();
+
+            List<ImageModel> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath)
+                .Select(filePath => new ImageModel
+                {
+                    FileName = Path.GetFileName(filePath),
+                    FilePath = filePath,
+                })
+                .ToList();
+
+            // Sort the uploadedImages list by parsing the date from the FileName
+            List<ImageModel> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath)
+                .Select(filePath => new ImageModel
+                {
+                    FileName = Path.GetFileName(filePath),
+                    FilePath = filePath,
+                })
+                .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
+                .ToList();
+
+            // Create a list to hold the latest analyzed images (uploaded, thumbnail, object)
+            var latestAnalyzedImages = new List<ImageModel>();
+
+            // Add the latest uploaded image, if available
+            if (uploadedImages.Any())
+            {
+                latestAnalyzedImages.Add(uploadedImages.First());
+            }
+
+            // Add the latest thumbnail image, if available
+            if (thumbnailsImages.Any())
+            {
+                latestAnalyzedImages.Add(thumbnailsImages.First());
+            }
+
+            // Add the latest object image, if available
+            if (objectsImages.Any())
+            {
+                latestAnalyzedImages.Add(objectsImages.First());
+            }
+
+            // Pass ImageModel lists to ViewData to use in the view
             ViewData["ObjectsImages"] = objectsImages;
             ViewData["ThumbnailsImages"] = thumbnailsImages;
             ViewData["UploadedImages"] = uploadedImages;
 
-            return View("Index");
+            // Pass the latest analyzed images to ViewData
+            ViewData["LatestAnalyzedImages"] = latestAnalyzedImages;
+
+            return View();
         }
+
+
+        // Custom function to extract and parse the date from the FileName
+        DateTime ExtractDateFromFileName(string fileName)
+        {
+            var datePart = fileName.Split('_')[0]; // Assuming the date part is before the underscore
+            if (DateTime.TryParseExact(datePart, "yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                return parsedDate;
+            }
+            // Return a default date or handle the error as needed
+            return DateTime.MinValue;
+        }
+
     }
 }

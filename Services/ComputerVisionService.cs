@@ -10,6 +10,7 @@ using Rectangle = System.Drawing.Rectangle;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using Microsoft.AspNetCore.Http;
+using Lab2_ImageService.Models;
 
 namespace Lab2_ImageService.Services
 {
@@ -93,6 +94,7 @@ namespace Lab2_ImageService.Services
                     }
                 }
 
+                //Draw boxes for objects
                 try
                 {
                     ProcessImage(results, imageFileOrUrl);
@@ -100,15 +102,12 @@ namespace Lab2_ImageService.Services
                 catch (Exception ex)
                 {
                     // Log the exception for further diagnosis
-                    _logger.LogError(ex, "Error generating thumbnail");
+                    _logger.LogError("Error generating object with box");
                 }
-                
-
                 // Create the view model and set the results
                 ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
                 imageAnalysis.ImageAnalysisResult = results;
-                imageAnalysis.Landmarks = landmarks; // You might need to adjust this based on your model structure
-
+                imageAnalysis.Landmarks = landmarks;
                 return imageAnalysis;
             }
             catch (Exception ex)

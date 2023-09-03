@@ -1,0 +1,179 @@
+﻿@model Lab2_ImageService.Models.ImageModel
+
+@{
+    ViewData["Title"] = "Analyzed Images";
+    var objectsImages = ViewData["ObjectsImages"] as List<ImageModel>;
+    var thumbnailsImages = ViewData["ThumbnailsImages"] as List<ImageModel>;
+    var uploadedImages = ViewData["UploadedImages"] as List<ImageModel>;
+
+    var download = "Download";
+
+    // Create a list for the latest analyzed images
+    var latestOriginalImage = new List<ImageModel>();
+    var latestThumbnail = new List<ImageModel>();
+    var latestObject = new List<ImageModel>();
+
+    // Add the latest uploaded image to the list
+    if (uploadedImages.Count > 0)
+    {
+        latestOriginalImage.Add(uploadedImages.First());
+    }
+
+    // Add the latest thumbnail image to the list
+    if (thumbnailsImages.Count > 0)
+    {
+        latestThumbnail.Add(thumbnailsImages.First());
+    }
+
+    // Add the latest object image to the list
+    if (objectsImages.Count > 0)
+    {
+        latestObject.Add(objectsImages.First());
+    }
+}
+
+
+<div class="content">
+    <div class="">
+        <div class="text-center">
+            <!-- Buttons to toggle image categories -->
+            <button id="showUploadedImages">Show Uploaded Images</button>
+            <button id="showThumbnails">Show Thumbnails</button>
+            <button id="showObjectImages">Show Objects Images</button>
+        </div>
+        
+        <div class="latest-image" style="display: ;">
+            <!-- Display uploaded images -->
+            <h3 class="text-white">Latest analyzed image</h3>
+            <div class="row justify-content-center">
+                @if (ViewData["LatestAnalyzedImages"] != null)
+                {
+                    @* var latestAnalyzedImages = ViewData["LatestAnalyzedImages"] as List<ImageModel>; *@
+
+                    foreach (var image in latestOriginalImage)
+                    {
+                        <div class="col-md-2 mb-3">
+                            <div class="card">
+                                <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid" alt="Uploaded Image" style="height: 200px;">
+                                <div class="card-body d-flex flex-column" style="height: 120px;">
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                    <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @foreach (var image in latestThumbnail)
+                    {
+                        <div class="col-md-2 mb-3">
+                            <div class="card">
+                                <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid" alt="Thumbnail Image" style="height: 200px;">
+                                <div class="card-body d-flex flex-column" style="height: 120px;">
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                    <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @foreach (var image in latestObject)
+                    {
+                        <div class="col-md-2 mb-3">
+                            <div class="card">
+                                <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid" alt="Object Image" style="height: 200px;">
+                                <div class="card-body d-flex flex-column" style="height: 120px;">
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                    <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+            </div>
+        </div>
+
+
+
+
+        <!-- Uploaded Images -->
+        <div class="uploaded-images" style="display: none;">
+            <!-- Display uploaded images -->
+            <h3 class="text-white">Uploaded Images:</h3>
+            <div class="row">
+                @foreach (var image in uploadedImages)
+                {
+                    <div class="col-md-2 mb-3">
+                        <div class="card">
+                            <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid" alt="Object Image" style="height: 200px;">
+                            <div class="card-body d-flex flex-column" style="height: 120px;">
+                                
+                                <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Thumbnails Images -->
+        <div class="thumbnails" style="display: none;">
+            <!-- Display thumbnail images -->
+            <h3 class="text-white">Thumbnails Images:</h3>
+            <div class="row">
+                @foreach (var image in thumbnailsImages)
+                {
+                    <div class="col-md-2 mb-3">
+                        <div class="card">
+                            <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid" alt="Thumbnail Image" style="height: 200px;">
+                            <div class="card-body d-flex flex-column" style="height: 120px;">
+                               
+                                <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Objects Images -->
+        <div class="object-images" style="display: none;">
+            <!-- Display object images -->
+            <h3 class="text-white">Objects Images:</h3>
+            <div class="row">
+                @foreach (var image in objectsImages)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid" alt="Uploaded Image" style="height: 200px;">
+                            <div class="card-body d-flex flex-column" style="height: 120px;">
+                                
+                                <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript/jQuery code to toggle visibility -->
+<script>
+    $(document).ready(function () {
+        // Show Uploaded Images
+        $("#showUploadedImages").click(function () {
+            $(".uploaded-images").toggle();
+        });
+
+        // Show Thumbnails
+        $("#showThumbnails").click(function () {
+            $(".thumbnails").toggle();
+        });
+
+        // Show Objects Images
+        $("#showObjectImages").click(function () {
+            $(".object-images").toggle();
+        });
+    });
+</script>

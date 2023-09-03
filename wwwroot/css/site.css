@@ -115,7 +115,35 @@ body {
     margin-right:auto;*/
 }
 
-.modalImage{
+.content{
     
 }
+.uploaded-images{
+    background-color: aqua;
+    margin-bottom: 3rem;
+    
+}
+
+.thumbnails {
+    background-color: yellow;
+    margin-bottom: 3rem;
+}
+
+.object-images {
+    background-color: gray;
+    margin-bottom: 3rem;
+}
+
+.latest-image{
+    text-align:center;
+    margin-top:3rem;
+}
+
+.latest-image h3{
+    margin-bottom: 2rem;
+}
+
+/*.card {
+    
+}*/
 

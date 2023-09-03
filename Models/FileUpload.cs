@@ -16,6 +16,7 @@ namespace Lab2_ImageService.Models
         public string? ThumbnailFileName { get; set; }
 
         public bool CreateThumbnail { get; set; }
+        public bool CreateObjectBox { get; set; }
         public int ThumbnailWidth { get; set; } = 1;
         public int ThumbnailHeight { get; set; } = 1;
 

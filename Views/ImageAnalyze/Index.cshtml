@@ -19,7 +19,8 @@
         </div>
         <div>
             <div>
-                <button id="openModal" data-toggle="modal" data-target="modalPopup">All images</button>
+                @* <button id="openModal" data-toggle="modal" data-target="modalPopup">All images</button> *@
+                <a class="nav-link" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
                 @* @Html.Partial("_ObjectsBox") *@
             </div>
 
@@ -44,6 +45,11 @@
                 <label for="createThumbnail" class="">Create Thumbnail:</label>
                 <input type="checkbox" class="" id="createThumbnail" name="CreateThumbnail">
             </div>
+            
+            <div class="form-check">
+                <label for="CreateObjectBox" class="">Create Bounding box:</label>
+                <input type="checkbox" class="" id="createObjectBox" name="CreateObjectBox">
+            </div>
 
             <div class="form-group">
                 <label for="ThumbnailWidth">Thumbnail Width (in pixels):</label>
@@ -62,18 +68,7 @@
                 <span class="badge badge-success">@ViewData["SuccessMessage"]</span>
             }
 
-            <script>
-                $(document).ready(function () {
-                    $('form').on('change', ':checkbox', function () {
-                        if (this.checked) {
-                            $(this).val(true);
-                        }
-                        else {
-                            $(this).val(false);
-                        }
-                    });
-                });
-            </script>
+           
 
             @*Displaying Analysis results*@
             <div class=" row">
@@ -139,10 +134,17 @@
                         }
                         <hr />
                         <h5>Object Detection</h5>
-                        foreach (var obj in imageAnalysisView.ImageAnalysisResult.Objects)
+                        @if(imageAnalysisView.ImageAnalysisResult.Objects.Count == 0)
                         {
+                            <span class="badge  badge-pill badge-danger">No object detected</span>
+                        }
+                        else
+                        {
+                            foreach (var obj in imageAnalysisView.ImageAnalysisResult.Objects)
+                            {
 
-                            <span class="badge  badge-pill badge-warning">@obj.ObjectProperty with Confidence @obj.Confidence.ToString("P")</span>
+                                <span class="badge  badge-pill badge-warning">@obj.ObjectProperty with Confidence @obj.Confidence.ToString("P")</span>
+                            }
                         }
 
                         <hr />
@@ -203,11 +205,10 @@
     </div>
 </div>
 
-@* script for modal content*@
-<script src="~/js/modalScript.js"></script>
+
 
 @* Modal for all images uploaded/Analyzed *@
-<div id="modalPopup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalPopupLabel" aria-hidden="true">
+@* <div id="modalPopup" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalPopupLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -261,19 +262,12 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const checkbox = document.getElementById("addThumbnail");
+@* scripts 
+    * modal content
+    * checkbox to work
+*@
+<script src="~/js/site.js"></script>
 
-        checkbox.addEventListener("change", function () {
-            if (checkbox.checked) {
-                console.log("Checkbox is checked");
-            } else {
-                console.log("Checkbox is unchecked");
-            }
-        });
-    });
-</script>
