@@ -163,17 +163,33 @@
     $(document).ready(function () {
         // Show Uploaded Images
         $("#showUploadedImages").click(function () {
+            // Hide other image categories
+            $(".thumbnails").hide();
+            $(".object-images").hide();
+
+            // Toggle the visibility of the Uploaded Images category
             $(".uploaded-images").toggle();
         });
 
         // Show Thumbnails
         $("#showThumbnails").click(function () {
+            // Hide other image categories
+            $(".uploaded-images").hide();
+            $(".object-images").hide();
+
+            // Toggle the visibility of the Thumbnails category
             $(".thumbnails").toggle();
         });
 
         // Show Objects Images
         $("#showObjectImages").click(function () {
+            // Hide other image categories
+            $(".uploaded-images").hide();
+            $(".thumbnails").hide();
+
+            // Toggle the visibility of the Object Images category
             $(".object-images").toggle();
         });
     });
+
 </script>
