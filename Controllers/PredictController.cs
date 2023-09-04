@@ -11,6 +11,14 @@ namespace Lab2_ImageService.Controllers
 {
     public class PredictController : Controller
     {
+        private readonly IConfiguration _configuration;
+
+        public PredictController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
@@ -21,42 +29,58 @@ namespace Lab2_ImageService.Controllers
         {
             try
             {
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                string prediction_endpoint = _configuration["PredictionEndpoint"];
+                string prediction_key = _configuration["PredictionKey"];
+                Guid project_id = Guid.Parse(_configuration["ProjectID"]);
+                string model_name = _configuration["ModelName"];
+
+                // Authenticate a client for the prediction API
+                CustomVisionPredictionClient prediction_client = new CustomVisionPredictionClient(new ApiKeyServiceClientCredentials(prediction_key))
                 {
-                    // Get Configuration Settings 
-                    IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
-                    IConfigurationRoot configuration = builder.Build();
-                    string prediction_endpoint = configuration["PredictionEndpoint"];
-                    string prediction_key = configuration["PredictionKey"];
-                    Guid project_id = Guid.Parse(configuration["ProjectID"]);
-                   
-                    string model_name = configuration["ModelName"];
+                    Endpoint = prediction_endpoint
+                };
 
-                    // Authenticate a client for the prediction API
-                    CustomVisionPredictionClient prediction_client = new CustomVisionPredictionClient(new ApiKeyServiceClientCredentials(prediction_key))
+                Stream imageStream = null;
+
+                if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    // Download the image from the URL
+                    using (var client = new HttpClient())
                     {
-                        Endpoint = prediction_endpoint
-                    };
+                        var response = client.GetAsync(model.ImageUrl).Result;
 
-                    // Read and classify the uploaded image
-                    using (var stream = model.ImageFile.OpenReadStream())
-                    {
-                        var result = prediction_client.ClassifyImage(project_id, model_name, stream);
-
-                        // Process and display prediction results
-                        // You can modify this part to display the results on the view.
-                        foreach (var prediction in result.Predictions)
+                        if (response.IsSuccessStatusCode)
                         {
-                            if (prediction.Probability > 0.5)
-                            {
-                                ViewBag.PredictionResult = $"{prediction.TagName} ({prediction.Probability:P1})";
-                            }
+                            imageStream = response.Content.ReadAsStreamAsync().Result;
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = "Failed to download the image from the URL.";
+                            return View();
                         }
                     }
                 }
+                else if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    // Use the locally uploaded image
+                    imageStream = model.ImageFile.OpenReadStream();
+                }
                 else
                 {
-                    ViewBag.ErrorMessage = "Please select a valid image file.";
+                    ViewBag.ErrorMessage = "Please provide a valid image URL or select a valid image file.";
+                    return View();
+                }
+
+                // Predict from the image stream
+                var result = prediction_client.ClassifyImage(project_id, model_name, imageStream);
+
+                // Process and display prediction results
+                foreach (var prediction in result.Predictions)
+                {
+                    if (prediction.Probability > 0.5)
+                    {
+                        ViewBag.PredictionResult = $"{prediction.TagName} {prediction.TagType} ({prediction.Probability:P1})";
+                    }
                 }
             }
             catch (Exception ex)
@@ -66,6 +90,8 @@ namespace Lab2_ImageService.Controllers
 
             return View();
         }
+
+
     }
 }
 

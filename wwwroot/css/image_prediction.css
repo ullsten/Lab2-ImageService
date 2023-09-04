@@ -3,12 +3,17 @@
     background-color:rgb(128, 128, 128);
     border-radius: 5px 5px 5px 5px;
     margin-top: 5em;
+    padding: 1em;
 }
 
 .prediction-container p{
-    color: red;
+    color: rgb(81, 81, 81);
 }
 
 .prediction_result {
     margin-top: 2em;
+}
+
+.form-control-file{
+    
 }
