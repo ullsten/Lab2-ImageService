@@ -9,5 +9,6 @@ namespace Lab2_ImageService.Models.ViewModel
         public ImageAnalysis ImageAnalysisResult { get; set; }
         public List<LandmarksModel> Landmarks { get; set; }
         public bool CreateObjectBox { get; set; }
+
     }
 }

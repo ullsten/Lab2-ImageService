@@ -1,6 +1,12 @@
 ﻿@using Lab2_ImageService.Models.ViewModel;
 @model Lab2_ImageService.Models.ViewModel.ImageAnalysisViewModel
 
+@{
+    // Create a list for the latest analyzed images
+    var latestOriginalImage = new List<ImageModel>();
+    var latestThumbnail = new List<ImageModel>();
+    var latestObject = new List<ImageModel>();
+}
 
 @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {

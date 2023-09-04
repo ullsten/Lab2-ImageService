@@ -1,6 +1,5 @@
 ﻿@using Lab2_ImageService.Helpers;
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,17 +13,17 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/home_custom.css" asp-append-version="true" />  
     <link rel="stylesheet" href="~/css/cellRest.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/Lab2_ImageService.styles.css" asp-append-version="true" /> *@
 </head>
 
-<body class="">
+<body class="d-flex flex-column">
+
     <header>
       <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow">
     <div class="container-fluid">
         
         @if (!MyHelpers.IsHome(Context))
                 {
-        <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,7 +31,7 @@
             <ul class="navbar-nav flex-grow-1">
                 
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home of AI</a>
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>
@@ -63,10 +62,7 @@
                     <div class="information">
                         <h6 class="footer-heading text-uppercase text-white fw-bold">Information</h6>
                         <ul class="list-unstyled footer-link mt-4">
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">Events</a></li>
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">Our Team</a></li>
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">Upcoming Sale</a></li>
-                            <li class=""><a href="" class="text-white text-decoration-none fw-semibold">New Launches</a></li>
+                            <li class="mb-1"><a href="https://www.microsoft.com/en-us/ai" class="text-white text-decoration-none fw-semibold">Microsoft AI</a></li> 
                         </ul>
                     </div>
                 </div>
@@ -74,10 +70,7 @@
                     <div class="resources">
                         <h6 class="footer-heading text-uppercase text-white fw-bold">Resources</h6>
                         <ul class="list-unstyled footer-link mt-4">
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">API</a></li>
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">Website Tutorials</a></li>
-                            <li class="mb-1"><a href="" class="text-white text-decoration-none fw-semibold">Third Party</a></li>
-                            <li class=""><a href="" class="text-white text-decoration-none fw-semibold">Video Lectures</a></li>
+                            <li class="mb-1"><a href="https://www.w3schools.com/" class="text-white text-decoration-none fw-semibold">Website (W3Scool)</a></li>         
                         </ul>
                     </div>
                 </div>
@@ -118,7 +111,7 @@
                 </div>
                 <div class="col-sm-6 col-md-6 mt-4 col-lg-4 text-center text-sm-start">
                     <div class="contact">
-                        <h6 class="footer-heading text-uppercase text-white fw-bold">Contact Us</h6>
+                        <h6 class="footer-heading text-uppercase text-white fw-bold">Contact</h6>
                         <address class="mt-4 m-0 text-white mb-1"><i class="bi bi-pin-map fw-semibold"></i> Byskillnadsvägen 14, 89340 Köpmanholmen</address>
                         <a href="tel:+" class="text-white mb-1 text-decoration-none d-block fw-semibold"><i class="bi bi-telephone"></i>  820304XXXX</a>
                         <a href="mailto:" class="text-white mb-1 text-decoration-none d-block fw-semibold"><i class="bi bi-envelope"></i> ullzten@gmail.com</a>

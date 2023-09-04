@@ -21,7 +21,7 @@ namespace Lab2_ImageService.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, int pageSize = 5)
         {
             try
             {
@@ -39,8 +39,6 @@ namespace Lab2_ImageService.Controllers
                 return View();
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
@@ -85,30 +83,30 @@ namespace Lab2_ImageService.Controllers
                     ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                 }
 
-                // Check if checkbox is checked(true)
-                if (fileUpload.CreateThumbnail)
+                if (fileUpload.CreateThumbnail && fileUpload.CreateObjectBox)
                 {
-                    // Create thumbnail here if checkbox is checked
+                    // Create thumbnail and draw bounding box if both checkboxes are checked
                     await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully with a thumbnail";
+                    _computerVisionService.DrawBoundingBox(imageAnalysis.ImageAnalysisResult, filePath);
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with thumbnail created and image processed with bounding box successfully.";
+                }
+                else if (fileUpload.CreateThumbnail)
+                {
+                    // Create thumbnail if "Create Thumbnail" checkbox is checked
+                    await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with thumbnail created successfully.";
+                }
+                else if (fileUpload.CreateObjectBox)
+                {
+                    // Draw bounding box if "Create Object Box" checkbox is checked
+                    _computerVisionService.DrawBoundingBox(imageAnalysis.ImageAnalysisResult, filePath);
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with image processed with bounding box successfully.";
                 }
                 else
                 {
-                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
+                    // Default message for just analyzing the image
+                    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file image analyzed successfully(without thumbnail and bounding box.";
                 }
-
-                Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox Local_IMG");
-
-                //Draw bounding box if object detected
-                if (fileUpload.CreateObjectBox)
-                {
-                    _computerVisionService.ProcessImage(imageAnalysis.ImageAnalysisResult, filePath);
-                }
-                else
-                {
-                    _logger.LogError("Error generating object with box");
-                }
-                
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {
@@ -146,26 +144,35 @@ namespace Lab2_ImageService.Controllers
                         ViewData["ImageUrl"] = timestampedFileName; // Pass the timestamped image URL to the view
                     }
 
-                    // Check if checkbox is checked(true)
-                    if (fileUpload.CreateThumbnail)
+                    if (fileUpload.CreateThumbnail && fileUpload.CreateObjectBox)
                     {
-                        // Create thumbnail here if checkbox is checked
+                        // Create thumbnail and draw bounding box if both checkboxes are checked
                         await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        ViewData["SuccessMessage"] = "File uploaded successfully with a thumbnail";
+                        _computerVisionService.DrawBoundingBox(imageAnalysis.ImageAnalysisResult, localImagePath);
+                        ViewData["SuccessMessage"] = "File uploaded with thumbnail created and image processed with bounding box successfully.";
+                    }
+                    else if (fileUpload.CreateThumbnail)
+                    {
+                        // Create thumbnail if "Create Thumbnail" checkbox is checked
+                        await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                        ViewData["SuccessMessage"] = "File uploaded with thumbnail created successfully.";
+                    }
+                    else if (fileUpload.CreateObjectBox)
+                    {
+                        // Draw bounding box if "Create Object Box" checkbox is checked
+                        _computerVisionService.DrawBoundingBox(imageAnalysis.ImageAnalysisResult, localImagePath);
+                        ViewData["SuccessMessage"] = "File uploaded with image processed with bounding box successfully.";
                     }
                     else
                     {
-                        ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded successfully without a thumbnail";
+                        // Default message for just analyzing the image
+                        ViewData["SuccessMessage"] = "file image analyzed successfully(without thumbnail and bounding box.";
                     }
-
-                    Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox URL");
                 }
             }
 
-
             return View("Index");
         }
-
 
         [HttpGet]
         public IActionResult AnalyzedImages()
@@ -233,8 +240,6 @@ namespace Lab2_ImageService.Controllers
             // Pass the latest analyzed images to ViewData
             ViewData["LatestAnalyzedImages"] = latestAnalyzedImages;
 
-
-
             // Pass ImageModel lists to ViewData to use in the view
             ViewData["ObjectsImages"] = objectsImages;
             ViewData["ThumbnailsImages"] = thumbnailsImages;
@@ -245,7 +250,6 @@ namespace Lab2_ImageService.Controllers
 
             return View();
         }
-
 
         // Custom function to extract and parse the date from the FileName
         DateTime ExtractDateFromFileName(string fileName)

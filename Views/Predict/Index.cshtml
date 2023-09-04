@@ -1,0 +1,29 @@
+﻿@model Lab2_ImageService.Models.ImageUploadModel
+
+@{
+    ViewBag.Title = "Image Prediction";
+}
+
+<h2>Upload an Image for Prediction</h2>
+
+<form method="post" enctype="multipart/form-data" asp-action="Index">
+    <div class="form-group">
+        <label asp-for="ImageFile">Choose an image:</label>
+        <input type="file" asp-for="ImageFile" class="form-control-file">
+    </div>
+    <button type="submit" class="btn btn-primary">Predict</button>
+</form>
+
+@if (!string.IsNullOrEmpty(ViewBag.PredictionResult))
+{
+    <div class="alert alert-success">
+        <strong>Prediction Result:</strong> @ViewBag.PredictionResult
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.ErrorMessage
+    </div>
+}

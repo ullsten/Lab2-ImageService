@@ -2,10 +2,6 @@
 @model Lab2_ImageService.Models.ViewModel.ImageAnalysisViewModel
 
 @{
-    ViewData["Title"] = "Home page";
-}
-
-@{
     var objectsImages = ViewData["ObjectsImages"] as List<string>;
     var thumbnailsImages = ViewData["ThumbnailsImages"] as List<string>;
     var uploadedImages = ViewData["UploadedImages"] as List<string>;
@@ -19,7 +15,7 @@
         </div>
         <div>
             <div>
-                <a class="nav-link" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
+                <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
             </div>
 
         </div>
@@ -49,15 +45,17 @@
                 <input type="checkbox" class="" id="createObjectBox" name="CreateObjectBox">
             </div>
 
-            <div class="form-group">
-                <label for="ThumbnailWidth">Thumbnail Width (in pixels):</label>
-                <input type="number" class="thumbnail-form form-control" id="thumbnailWidth" name="ThumbnailWidth">
-            </div>
+            <div id="thumbnailFields" style="display: none;">
+                <div class="form-group">
+                    <label for="ThumbnailWidth">Thumbnail Width (in pixels):</label>
+                    <input type="number" class="thumbnail-form form-control" id="thumbnailWidth" name="ThumbnailWidth">
+                </div>
 
-            <div class="form-group">
-                <label for="thumbnailHeight">Thumbnail Height (in pixels):</label>
-                <input type="number" class="thumbnail-form form-control" id="thumbnailHeight" name="ThumbnailHeight">
-            </div>
+                <div class="form-group">
+                    <label for="thumbnailHeight">Thumbnail Height (in pixels):</label>
+                    <input type="number" class="thumbnail-form form-control" id="thumbnailHeight" name="ThumbnailHeight">
+                </div>
+           </div>
 
             <button type="submit" class="btn btn-primary">Upload and Analyze</button>
 

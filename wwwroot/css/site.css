@@ -3,13 +3,27 @@
 }
 
 body {
-    margin-bottom: 60px;
+    place-items: center;
+    min-height: 100vh;
+    margin: 0;
+   
+    /*margin-bottom: 60px;*/
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background: radial-gradient( circle at 50% 50%, var(--background-color-1), var(--background-color-2) );
     /*height: 100vh;*/
     /*background-position: center;*/
+}
+
+.container {
+    /*padding-top: 60px;*/ /* Adjust the padding as needed to avoid content overlapping with the header */
+    flex: 1;
+}
+
+.footer {
+    flex-shrink: 0;
+    width: 100%;
 }
 
 .button-container2 {

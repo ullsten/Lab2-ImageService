@@ -6,6 +6,9 @@
     var thumbnailsImages = ViewData["ThumbnailsImages"] as List<ImageModel>;
     var uploadedImages = ViewData["UploadedImages"] as List<ImageModel>;
 
+    var totalPages = (int?)ViewBag.TotalPages;
+    var currentPage = (int?)ViewBag.CurrentPage;
+
     var download = "Download";
 
     // Create a list for the latest analyzed images
@@ -32,7 +35,6 @@
     }
 }
 
-
 <div class="content">
     <div class="">
         <div class="text-center">
@@ -48,8 +50,6 @@
             <div class="row justify-content-center">
                 @if (ViewData["LatestAnalyzedImages"] != null)
                 {
-                    @* var latestAnalyzedImages = ViewData["LatestAnalyzedImages"] as List<ImageModel>; *@
-
                     foreach (var image in latestOriginalImage)
                     {
                         <div class="col-md-2 mb-3">
@@ -88,6 +88,7 @@
                             </div>
                         </div>
                     }
+
 
                 }
             </div>
@@ -155,6 +156,9 @@
     </div>
 </div>
 
+
+
+
 <!-- JavaScript/jQuery code to toggle visibility -->
 <script>
     $(document).ready(function () {
@@ -190,3 +194,4 @@
     });
 
 </script>
+

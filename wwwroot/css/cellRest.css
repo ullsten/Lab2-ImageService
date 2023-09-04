@@ -8,11 +8,11 @@
     --animation-duration: 4s;
 }
 
-body {
+/*body {
     place-items: center;
     min-height: 100vh;
     margin: 0;
-}
+}*/
 
 @keyframes swaying {
     0%, 100% {

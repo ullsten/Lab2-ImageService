@@ -42,4 +42,16 @@ $(document).ready(function () {
 
 //*********************************************************** */
 
+// Get references to the checkbox and thumbnail input fields
+const createThumbnailCheckbox = document.getElementById("createThumbnail");
+const thumbnailFields = document.getElementById("thumbnailFields");
 
+// Add an event listener to the checkbox to toggle the visibility of the thumbnail fields
+createThumbnailCheckbox.addEventListener("change", function () {
+    if (this.checked) {
+        thumbnailFields.style.display = "block"; // Show the fields if checkbox is checked
+    } else {
+        thumbnailFields.style.display = "none"; // Hide the fields if checkbox is unchecked
+    }
+});
+//*********************************************************** */

@@ -93,17 +93,6 @@ namespace Lab2_ImageService.Services
                         landmarks.AddRange(category.Detail.Landmarks);
                     }
                 }
-
-                //Draw boxes for objects
-                //try
-                //{
-                //    ProcessImage(results, imageFileOrUrl);
-                //}
-                //catch (Exception ex)
-                //{
-                //    // Log the exception for further diagnosis
-                //    _logger.LogError("Error generating object with box");
-                //}
                 // Create the view model and set the results
                 ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
                 imageAnalysis.ImageAnalysisResult = results;
@@ -165,7 +154,7 @@ namespace Lab2_ImageService.Services
             }
         }
 
-        public void ProcessImage(ImageAnalysis analysis, string imageFile)
+        public void DrawBoundingBox(ImageAnalysis analysis, string imageFile)
         {
             // Get objects in the image
             if (analysis.Objects.Count > 0)
