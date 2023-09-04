@@ -25,26 +25,6 @@ namespace Lab2_ImageService.Controllers
         {
             try
             {
-                ////Get folders from webRootPath
-                //string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
-                //string thumbnailsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Thumbnails");
-                //string uploadedImagesFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
-
-                //// Create the folders if they don't exist
-                //Directory.CreateDirectory(objectsFolderPath);
-                //Directory.CreateDirectory(thumbnailsFolderPath);
-                //Directory.CreateDirectory(uploadedImagesFolderPath);
-
-                //// Create list to hold images
-                //List<string> objectsImages = Directory.GetFiles(objectsFolderPath).Select(Path.GetFileName).ToList();
-                //List<string> thumbnailsImages = Directory.GetFiles(thumbnailsFolderPath).Select(Path.GetFileName).ToList();
-                //List<string> uploadedImages = Directory.GetFiles(uploadedImagesFolderPath).Select(Path.GetFileName).ToList();
-
-                //// Pass images to ViewData to use in view
-                //ViewData["ObjectsImages"] = objectsImages;
-                //ViewData["ThumbnailsImages"] = thumbnailsImages;
-                //ViewData["UploadedImages"] = uploadedImages;
-
                 // Show success message after uploading image
                 ViewData["SuccessMessage"] = "";
 
@@ -118,6 +98,17 @@ namespace Lab2_ImageService.Controllers
                 }
 
                 Debug.WriteLine(fileUpload.CreateThumbnail + " Hello from checkbox Local_IMG");
+
+                //Draw bounding box if object detected
+                if (fileUpload.CreateObjectBox)
+                {
+                    _computerVisionService.ProcessImage(imageAnalysis.ImageAnalysisResult, filePath);
+                }
+                else
+                {
+                    _logger.LogError("Error generating object with box");
+                }
+                
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {

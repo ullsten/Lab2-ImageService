@@ -95,15 +95,15 @@ namespace Lab2_ImageService.Services
                 }
 
                 //Draw boxes for objects
-                try
-                {
-                    ProcessImage(results, imageFileOrUrl);
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception for further diagnosis
-                    _logger.LogError("Error generating object with box");
-                }
+                //try
+                //{
+                //    ProcessImage(results, imageFileOrUrl);
+                //}
+                //catch (Exception ex)
+                //{
+                //    // Log the exception for further diagnosis
+                //    _logger.LogError("Error generating object with box");
+                //}
                 // Create the view model and set the results
                 ImageAnalysisViewModel imageAnalysis = new ImageAnalysisViewModel();
                 imageAnalysis.ImageAnalysisResult = results;
