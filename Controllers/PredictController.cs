@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
+using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Microsoft.AspNetCore.Http;
 using Lab2_ImageService.Models;
 
@@ -22,16 +23,17 @@ namespace Lab2_ImageService.Controllers
             {
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    // Get Configuration Settings (move this to a separate method for cleaner code)
+                    // Get Configuration Settings 
                     IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
                     IConfigurationRoot configuration = builder.Build();
                     string prediction_endpoint = configuration["PredictionEndpoint"];
                     string prediction_key = configuration["PredictionKey"];
                     Guid project_id = Guid.Parse(configuration["ProjectID"]);
+                   
                     string model_name = configuration["ModelName"];
 
                     // Authenticate a client for the prediction API
-                    CustomVisionPredictionClient prediction_client = new CustomVisionPredictionClient(new Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.ApiKeyServiceClientCredentials(prediction_key))
+                    CustomVisionPredictionClient prediction_client = new CustomVisionPredictionClient(new ApiKeyServiceClientCredentials(prediction_key))
                     {
                         Endpoint = prediction_endpoint
                     };
@@ -66,3 +68,4 @@ namespace Lab2_ImageService.Controllers
         }
     }
 }
+

@@ -1,0 +1,14 @@
+.prediction-container
+{
+    background-color:rgb(128, 128, 128);
+    border-radius: 5px 5px 5px 5px;
+    margin-top: 5em;
+}
+
+.prediction-container p{
+    color: red;
+}
+
+.prediction_result {
+    margin-top: 2em;
+}
