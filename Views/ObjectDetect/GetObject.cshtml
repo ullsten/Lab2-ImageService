@@ -1,0 +1,106 @@
+﻿@* @model Newtonsoft.Json.Linq.JObject
+
+@using (Html.BeginForm("GetObject", "ObjectDetect", FormMethod.Post))
+{
+    <div>
+        @Html.Label("Image URL:")
+        @Html.TextBox("imageUrl", null, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <button type="submit" class="btn btn-primary">Detect Objects</button>
+    </div>
+}
+
+@if (Model != null)
+{
+    <img src="@Model["imageUrl"]" alt="Image" width="400" height="300">
+    <table>
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Probability</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prediction in Model["predictions"])
+            {
+                <tr class="bg-white rounded-3">
+                    <td>@prediction["tagName"]</td>
+                    <td>@prediction["probability"]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} *@
+
+@model Newtonsoft.Json.Linq.JObject
+
+@using (Html.BeginForm("GetObject", "ObjectDetect", FormMethod.Post))
+{
+    <div class="bg-danger">
+        @Html.Label("Image URL:")
+        @Html.TextBox("imageUrl", null, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <button type="submit" class="btn btn-primary">Detect Objects</button>
+    </div>
+}
+
+@if (Model != null)
+{
+   <div class="bg-secondary mt-3">
+        <h2>Object Detection Results:</h2>
+        <img src="@ViewData["Image"]" alt="Image" width="400" height="300">
+        <div>
+            <strong>Tag:</strong> @Model["predictions"][0]["tagName"]
+        </div>
+        <div>
+            <strong>Probability:</strong> @Model["predictions"][0]["probability"]
+        </div>
+   </div>
+}
+
+<!-- Add this HTML to your view -->
+<img src="@ViewData["Image"]" id="imageToAnalyze" />
+<canvas id="boundingBoxCanvas"></canvas>
+
+<script>
+    // Get the image element and canvas element
+    var image = document.getElementById("imageToAnalyze");
+    var canvas = document.getElementById("boundingBoxCanvas");
+    var context = canvas.getContext("2d");
+
+    // Load the image
+    image.onload = function () {
+        // Set the canvas size to match the image size
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        // Draw the image on the canvas
+        context.drawImage(image, 0, 0);
+
+        // Parse the detected objects and draw bounding boxes
+        var result = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["Result"]))'); // Deserialize the result
+        result.predictions.forEach(function (prediction) {
+            var left = prediction.boundingBox.left * image.width;
+            var top = prediction.boundingBox.top * image.height;
+            var width = prediction.boundingBox.width * image.width;
+            var height = prediction.boundingBox.height * image.height;
+
+            // Draw the bounding box
+            context.strokeStyle = "red";
+            context.lineWidth = 2;
+            context.beginPath();
+            context.rect(left, top, width, height);
+            context.stroke();
+
+            // Optionally, label the object
+            context.fillStyle = "red";
+            context.font = "16px Arial";
+            context.fillText(prediction.tagName, left, top - 5);
+        });
+    };
+</script>
+

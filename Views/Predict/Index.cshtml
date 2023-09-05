@@ -22,19 +22,29 @@
         <button type="submit" class="btn btn-primary">Predict</button>
     </form>
 
-    <div class="prediction_result">
-        @if (!string.IsNullOrEmpty(ViewBag.PredictionResult))
+   <div class="text-center">
+        @if (!string.IsNullOrEmpty(ViewData["ImageUrl"] as string))
         {
-            <div class="alert alert-success">
-                <strong>Prediction Result:</strong> @ViewBag.PredictionResult
+            <div>
+                <img src="@ViewData["ImageUrl"]" width="400" height="400" />
             </div>
         }
 
-        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
-        {
-            <div class="alert alert-danger">
-                <strong>Error:</strong> @ViewBag.ErrorMessage
-            </div>
-        }
-    </div>
+
+        <div class="prediction_result">
+            @if (!string.IsNullOrEmpty(ViewBag.PredictionResult))
+            {
+                <div class="alert alert-success">
+                    <strong>Prediction Result:</strong> @ViewBag.PredictionResult
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> @ViewBag.ErrorMessage
+                </div>
+            }
+        </div>
+   </div>
 </div>

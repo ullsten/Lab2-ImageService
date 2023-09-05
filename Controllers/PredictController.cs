@@ -12,10 +12,12 @@ namespace Lab2_ImageService.Controllers
     public class PredictController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public PredictController(IConfiguration configuration)
+        public PredictController(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet]
@@ -59,9 +61,33 @@ namespace Lab2_ImageService.Controllers
                             return View();
                         }
                     }
+                    // Pass input image URL to the view to use
+                    ViewData["ImageUrl"] = model.ImageUrl;
                 }
                 else if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
+                    // Save the uploaded file to a local path (e.g., wwwroot/uploads)
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "Prediction-Uploads");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageFile.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        model.ImageFile.CopyTo(stream);
+                    }
+
+                    // Generate a URL for the uploaded image
+                    string imageUrl = Url.Content("~/Prediction-Uploads/" + uniqueFileName);
+
+                    // Pass the imageUrl to the view
+                    ViewData["ImageUrl"] = imageUrl;
+
                     // Use the locally uploaded image
                     imageStream = model.ImageFile.OpenReadStream();
                 }
@@ -90,7 +116,6 @@ namespace Lab2_ImageService.Controllers
 
             return View();
         }
-
 
     }
 }

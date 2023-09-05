@@ -11,6 +11,7 @@ using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
 using Microsoft.AspNetCore.Http;
 using Lab2_ImageService.Models;
+using RectangleF = System.Drawing.RectangleF;
 
 namespace Lab2_ImageService.Services
 {
@@ -184,7 +185,53 @@ namespace Lab2_ImageService.Services
                 string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
                 string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_object.jpg";
                 string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
+
                 image.Save(outputFilePath);
+                
+                Console.WriteLine("Results saved in " + outputFilePath);
+            }
+        }
+
+        public void DrawBoundingBox(dynamic result, string imageUrl)
+        {
+            // Get objects in the image
+            if (result.predictions.Count > 0)
+            {
+                Console.WriteLine("Objects in image:");
+
+                // Prepare image for drawing
+                WebClient webClient = new WebClient();
+                byte[] imageBytes = webClient.DownloadData(imageUrl);
+                MemoryStream memoryStream = new MemoryStream(imageBytes);
+                Image image = Image.FromStream(memoryStream);
+                Graphics graphics = Graphics.FromImage(image);
+                Pen pen = new Pen(Color.Cyan, 3);
+                Font font = new Font("Arial", 16);
+                SolidBrush brush = new SolidBrush(Color.Black);
+
+                foreach (var prediction in result.predictions)
+                {
+                    // Print object name and confidence
+                    Console.WriteLine($" - {prediction.tagName} (confidence: {prediction.probability.ToString("P")})");
+
+                    // Draw object bounding box
+                    var boundingBox = prediction.boundingBox;
+                    float x = (float)(boundingBox.left * image.Width);
+                    float y = (float)(boundingBox.top * image.Height);
+                    float width = (float)(boundingBox.width * image.Width);
+                    float height = (float)(boundingBox.height * image.Height);
+                    RectangleF rect = new RectangleF(x, y, width, height);
+                    graphics.DrawRectangle(pen, rect);
+                    graphics.DrawString(prediction.tagName, font, brush, x, y);
+                }
+
+                // Save annotated image with the same name as the input image
+                string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+                string outputFileName = Path.GetFileNameWithoutExtension(imageUrl) + "_object.jpg";
+                string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
+
+                image.Save(outputFilePath);
+
                 Console.WriteLine("Results saved in " + outputFilePath);
             }
         }

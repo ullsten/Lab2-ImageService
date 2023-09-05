@@ -8,6 +8,6 @@ namespace Lab2_ImageService.Services
         Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageUrl);
         Task GetThumbnail(string imageFile, int width, int height);
         void DrawBoundingBox(ImageAnalysis analysis, string imageFile);
-        //public List<string> ProcessImage(ImageAnalysis analysis, string imageFile);
+        void DrawBoundingBox(dynamic result, string imageFile);
     }
 }
