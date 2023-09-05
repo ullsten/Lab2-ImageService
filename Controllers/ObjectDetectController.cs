@@ -84,9 +84,6 @@ namespace Lab2_ImageService.Controllers
 
 
 
-        //_computerVisionService.DrawBoundingBox(result, imageUrl);
-
-
 
 
 

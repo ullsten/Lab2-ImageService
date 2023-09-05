@@ -83,19 +83,12 @@ body {
     margin-top: 3rem;
 }
 
-.uploaded-images {
-    background-color: aqua;
+.uploaded-images, .thumbnails, .object-images {
+    margin-top:5em;
     margin-bottom: 3rem;
-}
-
-.thumbnails {
-    background-color: yellow;
-    margin-bottom: 3rem;
-}
-
-.object-images {
-    background-color: gray;
-    margin-bottom: 3rem;
+    padding: 10px;
+    border-radius: 5px 5px 5px 5px;
+    background-color: darkslategray;
 }
 
 .latest-image {
@@ -103,16 +96,64 @@ body {
     margin-top: 3rem;
 }
 
-    .latest-image h3 {
-        margin-bottom: 2rem;
-    }
+.latest-image h3 {
+    margin-bottom: 2rem;
+}
 
-/* Define a custom CSS class */
 .custom-span {
     font-size: 1em;
     margin-bottom: 3px;
 }
 
+.backTopBtn {
+    text-decoration: none;
+    color: black;
+    text-align: center;
+    border: 0;
+    border-radius: 5px 5px 5px 5px;
+}
+
+/* Style the modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 50px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Style the modal content (the image) */
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto; /* Allow the width to adjust based on aspect ratio */
+    height: auto; /* Allow the height to adjust based on aspect ratio */
+}
+
+/* Style the close button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Style the images with a cursor pointer for interaction */
+.img-thumbnail {
+    cursor: pointer;
+}
+
+
+/************************************************************/
 
 @media (max-width: 600px) {
     .navbar-toggler {

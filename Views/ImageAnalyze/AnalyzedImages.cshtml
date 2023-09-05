@@ -95,9 +95,12 @@
         </div>
 
         <!-- Uploaded Images -->
-        <div class="uploaded-images" style="display: none;">
+        <div class="uploaded-images" style="display: none;" id="uploadedImagesDiv">
             <!-- Display uploaded images -->
-            <h3 class="text-white">Uploaded Images:</h3>
+            <div class="text-center mb-3 mt-3">
+                <h3 class="text-white">Uploaded Images</h3>
+                <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
+            </div>
             <div class="row">
                 @foreach (var image in uploadedImages)
                 {
@@ -115,9 +118,12 @@
         </div>
 
         <!-- Thumbnails Images -->
-        <div class="thumbnails" style="display: none;">
+        <div class="thumbnails" style="display: none;" id="thumbnailsDiv">
             <!-- Display thumbnail images -->
-            <h3 class="text-white">Thumbnails Images:</h3>
+            <div class="text-center mb-3 mt-3">
+                <h3 class="text-white">Uploaded Images</h3>
+                <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
+            </div>
             <div class="row">
                 @foreach (var image in thumbnailsImages)
                 {
@@ -135,9 +141,13 @@
         </div>
 
         <!-- Objects Images -->
-        <div class="object-images" style="display: none;">
+        <div class="object-images" style="display: none;" id="objectImagesDiv">
             <!-- Display object images -->
-            <h3 class="text-white">Objects Images:</h3>
+            <div class="text-center mb-3 mt-3">
+                <h3 class="text-white">Uploaded Images</h3>
+                <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
+            </div>
+            
             <div class="row">
                 @foreach (var image in objectsImages)
                 {
@@ -156,13 +166,73 @@
     </div>
 </div>
 
+<!-- The Modal for images-->
+<div id="myModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
 
 
+<script>
+    // Get the modal element and close button
+    var modal = document.getElementById('myModal');
+    var modalImage = document.getElementById('modalImage');
+    var closeBtn = document.getElementsByClassName('close')[0];
+
+    // Function to open the modal and set the image source
+    function openModal(imageSrc) {
+        modal.style.display = 'block';
+        modalImage.src = imageSrc;
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    // Attach click event handlers to the images
+    var images = document.querySelectorAll('.img-thumbnail');
+
+    images.forEach(function (image) {
+        image.addEventListener('click', function () {
+            openModal(this.src);
+        });
+    });
+
+    // Attach click event handler to close button
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close the modal when the user clicks outside of it
+    window.addEventListener('click', function (event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    });
+</script>
+
+
+<script>
+    // Function to scroll to the top of the page
+    function scrollToTop() {
+        $('html, body').animate({ scrollTop: 0 }, 200); // 1000 milliseconds (1 second) for smooth scrolling
+        // Hide other image categories
+        $(".thumbnails").hide();
+        $(".object-images").hide();
+        $(".uploaded-images").hide();
+    }
+</script>
 
 <!-- JavaScript/jQuery code to toggle visibility -->
 <script>
     $(document).ready(function () {
-        // Show Uploaded Images
+        // Function to scroll to a specific div
+        function scrollToDiv(divId) {
+            $('html, body').animate({
+                scrollTop: $(divId).offset().top
+            }, 1000); // 1000 milliseconds (1 second) for smooth scrolling
+        }
+
+        // Show Uploaded Images and scroll to the Uploaded Images div
         $("#showUploadedImages").click(function () {
             // Hide other image categories
             $(".thumbnails").hide();
@@ -170,9 +240,12 @@
 
             // Toggle the visibility of the Uploaded Images category
             $(".uploaded-images").toggle();
+
+            // Scroll to the Uploaded Images div
+            scrollToDiv("#uploadedImagesDiv");
         });
 
-        // Show Thumbnails
+        // Show Thumbnails and scroll to the Thumbnails div
         $("#showThumbnails").click(function () {
             // Hide other image categories
             $(".uploaded-images").hide();
@@ -180,9 +253,12 @@
 
             // Toggle the visibility of the Thumbnails category
             $(".thumbnails").toggle();
+
+            // Scroll to the Thumbnails div
+            scrollToDiv("#thumbnailsDiv");
         });
 
-        // Show Objects Images
+        // Show Objects Images and scroll to the Objects Images div
         $("#showObjectImages").click(function () {
             // Hide other image categories
             $(".uploaded-images").hide();
@@ -190,8 +266,11 @@
 
             // Toggle the visibility of the Object Images category
             $(".object-images").toggle();
+
+            // Scroll to the Object Images div
+            scrollToDiv("#objectImagesDiv");
         });
     });
-
 </script>
+
 
