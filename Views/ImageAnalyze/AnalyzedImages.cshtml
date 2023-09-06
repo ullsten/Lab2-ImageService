@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Analyzed Images";
+
     var objectsImages = ViewData["ObjectsImages"] as List<ImageModel>;
     var thumbnailsImages = ViewData["ThumbnailsImages"] as List<ImageModel>;
     var uploadedImages = ViewData["UploadedImages"] as List<ImageModel>;
@@ -42,6 +43,7 @@
             <button id="showUploadedImages">Original Images</button>
             <button id="showThumbnails">Thumbnails</button>
             <button id="showObjectImages">Objects Images</button>
+            <a class="" asp-area="" asp-controller="Img" asp-action="Index"><button>Delete/Add Images</button></a>
         </div>
 
         <div class="latest-image">

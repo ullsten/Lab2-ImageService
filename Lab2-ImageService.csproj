@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Objects\" />
+    <Folder Include="wwwroot\TestFolder\" />
     <Folder Include="wwwroot\Thumbnails\" />
     <Folder Include="wwwroot\UploadedImages\" />
   </ItemGroup>

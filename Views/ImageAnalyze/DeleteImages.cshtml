@@ -1,0 +1,29 @@
+﻿@model Lab2_ImageService.Models.ImageClass
+
+<style>
+    .custom-test {
+    }
+</style>
+<center class="bg-white custom-test">
+    <h1>Insert, display and delete image files in wwwroot Folder</h1>
+    <hr />
+    <form method="post" enctype="multipart/form-data" asp-controller="ImageAnalyze" asp-action="DeleteImages">
+        <input type="file" name="imgfile" />
+        <input type="submit" value="Upload" />
+
+        <table class="table">
+            <tr>
+                <th>Image Name</th>
+                <th>Image</th>
+            </tr>
+            @foreach (var item in Model.FileImage)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td><img src="/TestFolder/" height="80" width="120" /></td>
+                    <td><a href="@Url.Action("DeleteImages","ImageAnalyze", new {imgdel=item.Name})">Delete</a></td>
+                </tr>
+            }
+        </table>
+    </form>
+</center>

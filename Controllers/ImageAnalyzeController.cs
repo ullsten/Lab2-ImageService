@@ -302,6 +302,5 @@ namespace Lab2_ImageService.Controllers
             // Return a default date or handle the error as needed
             return DateTime.MinValue;
         }
-
     }
 }
