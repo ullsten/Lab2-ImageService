@@ -1,0 +1,27 @@
+﻿@model Lab2_ImageService.Models.FaceDetectionResult
+
+<h2>Detected Faces</h2>
+
+<img src="@Model.ImagePath" alt="Uploaded Image" class="img-thumbnail" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Smile</th>
+            <th>Glasses</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var face in (IEnumerable<Lab2_ImageService.Models.ViewModel.Face>)Model.DetectedFaces)
+        {
+            <tr>
+                <td>@face.Age</td>
+                <td>@face.Gender</td>
+                <td>@face.Smile</td>
+                <td>@face.Glasses</td>
+            </tr>
+        }
+    </tbody>
+</table>

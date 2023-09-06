@@ -1,0 +1,11 @@
+﻿@model Lab2_ImageService.Models.FaceDetectionResult
+
+<h2>Upload an Image for Face Detection</h2>
+
+@using (Html.BeginForm("DetectFaces", "FaceDetection", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <input type="file" name="imageFile" accept="image/*" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Detect Faces</button>
+}
