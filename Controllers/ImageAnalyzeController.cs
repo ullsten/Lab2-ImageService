@@ -126,39 +126,6 @@ namespace Lab2_ImageService.Controllers
                 {
                     ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file image analyzed successfully (without thumbnail and bounding box).";
                 }
-
-
-                //if (fileUpload.CreateAll)
-                //{
-                //    // Create thumbnail and draw bounding box object and faces
-                //    await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                //    _computerVisionService.DrawBoundingBoxObject_Face(imageAnalysis.ImageAnalysisResult, filePath);
-
-                //    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with thumbnail created and image processed with bounding box successfully.";
-                //}
-                //else if (fileUpload.CreateThumbnail)
-                //{
-                //    // Create thumbnail if "Create Thumbnail" checkbox is checked
-                //    await _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                //    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with thumbnail created successfully.";
-                //}
-                //else if (fileUpload.CreateObjectBox)
-                //{
-                //    // Draw bounding box if "Create Object Box" checkbox is checked
-                //    _computerVisionService.DrawBoundingBoxObject(imageAnalysis.ImageAnalysisResult, filePath);
-                //    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with image processed with bounding box successfully.";
-                //}
-                //else if (fileUpload.CreateFaceBox)
-                //{
-                //    // Draw bounding box if "Create Face Box" checkbox is checked
-                //    _computerVisionService.DrawBoundingBoxFace(imageAnalysis.ImageAnalysisResult, filePath);
-                //    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file uploaded with image processed with bounding box successfully.";
-                //}
-                //else
-                //{
-                //    // Default message for just analyzing the image
-                //    ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file image analyzed successfully(without thumbnail and bounding box.";
-                //}
             }
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {
@@ -196,36 +163,54 @@ namespace Lab2_ImageService.Controllers
                         ViewData["ImageUrl"] = timestampedFileName; // Pass the timestamped image URL to the view
                     }
 
-                    if (fileUpload.CreateAll)
+                    // Define an array of options (checkboxes) and their corresponding actions
+                    var options = new List<(bool, Action)>
+                {
+                    (fileUpload.CreateAll, () =>
                     {
-                        // Create thumbnail, box object/s, box face/s
-                        await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
+                        _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
                         _computerVisionService.DrawBoundingBoxObject_Face(imageAnalysis.ImageAnalysisResult, localImagePath);
+                    }),
+                        (fileUpload.CreateThumbnail, () => _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight)),
+                        (fileUpload.CreateObjectBox, () => _computerVisionService.DrawBoundingBoxObject(imageAnalysis.ImageAnalysisResult, localImagePath)),
+                        (fileUpload.CreateFaceBox, () => _computerVisionService.DrawBoundingBoxFace(imageAnalysis.ImageAnalysisResult, localImagePath))
+                };
 
-                        ViewData["SuccessMessage"] = "File uploaded with thumbnail created and image processed with bounding box successfully.";
-                    }
-                    else if (fileUpload.CreateThumbnail)
+                    // Check each option and execute the corresponding action if it's true
+                    var selectedActions = options.Where(option => option.Item1).Select(option => option.Item2).ToList();
+
+                    // Check if any actions were selected and perform them
+                    if (selectedActions.Any())
                     {
-                        // Create thumbnail if "Create Thumbnail" checkbox is checked
-                        await _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        ViewData["SuccessMessage"] = "File uploaded with thumbnail created successfully.";
-                    }
-                    else if (fileUpload.CreateObjectBox)
-                    {
-                        // Draw bounding box if "Create Object Box" checkbox is checked
-                        _computerVisionService.DrawBoundingBoxObject(imageAnalysis.ImageAnalysisResult, localImagePath);
-                        ViewData["SuccessMessage"] = "File uploaded with image processed with bounding box successfully.";
-                    }
-                    else if (fileUpload.CreateFaceBox)
-                    {
-                        // Draw bounding box if "Create Face Box" checkbox is checked
-                        _computerVisionService.DrawBoundingBoxFace(imageAnalysis.ImageAnalysisResult, localImagePath);
-                        ViewData["SuccessMessage"] = "File uploaded with image processed with bounding box successfully.";
+                        foreach (var action in selectedActions)
+                        {
+                            action.Invoke();
+                        }
+
+                        // Build a success message based on the selected actions
+                        var successMessage = " file uploaded with";
+
+                        if (fileUpload.CreateThumbnail)
+                        {
+                            successMessage += " thumbnail created";
+                        }
+
+                        if (fileUpload.CreateObjectBox || fileUpload.CreateFaceBox)
+                        {
+                            if (fileUpload.CreateThumbnail)
+                            {
+                                successMessage += " and";
+                            }
+                            successMessage += " bounding boxes drawn";
+                        }
+
+                        successMessage += " successfully.";
+
+                        ViewData["SuccessMessage"] = successMessage;
                     }
                     else
                     {
-                        // Default message for just analyzing the image
-                        ViewData["SuccessMessage"] = "file image analyzed successfully(without thumbnail and bounding box.";
+                        ViewData["SuccessMessage"] = " file image analyzed successfully (without thumbnail and bounding box).";
                     }
                 }
             }
