@@ -101,6 +101,8 @@ body {
 .custom-span {
     font-size: 1em;
     margin-bottom: 3px;
+    max-width: 100%;
+    word-wrap:anywhere;
 }
 
 .backTopBtn {
@@ -162,6 +164,21 @@ body {
     display: flex;
     flex-direction:column;
 }
+.successMessage{
+    margin-top: 1em;
+}
+/*.description-container {
+    word-wrap: break-word;*/ /* Allow text to wrap onto the next line */
+    /*max-width: 80%;*/ /* Limit the text width to the container's width */
+/*}
+
+.description-text {
+    font-size: 16px;*/ /* Adjust the font size as needed */
+/*}
+
+.confidence-text {
+    font-size: 14px;*/ /* Adjust the font size as needed */
+/*}*/
 /************************************************************/
 
 @media (max-width: 600px) {
@@ -170,12 +187,24 @@ body {
     }
 }
 
-@media screen and (max-width: 900px) {
-    .custom-span {
-        font-size: 0.8em;
+@media(max-width: 800px){
+    .custom-span{
+       font-size: 0.6em;
     }
-    
 }
+@media(max-width: 800px){
+    .successMessage {
+        font-size: 0.6em;
+    }
+}
+@media(max-width: 500px){
+    .successMessage {
+        display: none;
+    }
+}
+
+
+
 
 /*@-webkit-keyframes hue-rotate {
     from {

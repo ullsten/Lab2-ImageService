@@ -10,70 +10,75 @@
 
 @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @*Displaying Analysis results*@
-    <div class=" row">
-        <div class="col-sm-6">
-
+    <div class="row mt-3">
+        <!-- First Row: Image and Description -->
+        <div class="col-sm-12">
             @if (ViewData["ImageUrl"] != null)
             {
                 var imageUrl = ViewData["ImageUrl"].ToString();
 
                 @if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
                 {
-                    // Display image from URL
+                    <!-- Display image from URL -->
                     <img src="@imageUrl" alt="Image from URL" class="img-thumbnail" />
                 }
                 else
                 {
-                    // Display image from local file
+                    <!-- Display image from local file -->
                     <img src="~/UploadedImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
                 }
             }
 
-
-        </div>
-        <div class="col-sm-6 small">
-
+            <!-- Description -->
+            <h5>Description</h5>
             @if (ViewData["ImageAnalysisViewModel"] != null)
             {
                 var imageAnalysisView = (ImageAnalysisViewModel)ViewData["ImageAnalysisViewModel"];
-                <h5>Description</h5>
-                foreach (var caption in imageAnalysisView.ImageAnalysisResult.Description.Captions)
-                {
-                    <span class="badge badge-pill badge-info"> @caption.Text: with confidence @caption.Confidence.ToString("P")</span>
-
-                    <br />
-                }
-                <hr />
-                <h5>Category:</h5>
-                foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
-                {
-                    
-                    @if (imageAnalysisView.ImageAnalysisResult.Categories.Count == 0)
+                <div class="description-container">
+                    <!-- Added a container div for description -->
+                    @foreach (var caption in imageAnalysisView.ImageAnalysisResult.Description.Captions)
                     {
-                        <span class="badge badge-pill badge-danger">No category detected</span>
-                    }
-                    else
-                    {
-                        <li> @category.Name (Confidence: @category.Score.ToString("P"))</li>
-
+                        <span class="badge badge-pill badge-info description-text">@caption.Text:</span> <!-- Removed the "with confidence" part -->
+                        <span class="badge badge-pill badge-info confidence-text">with confidence @caption.Confidence.ToString("P")</span>
                         <br />
                     }
-                    <hr />
-
-                    <h5>Landmarks</h5>
-                    if (category.Detail?.Landmarks != null && category.Detail.Landmarks.Any())
-                    {
-                        foreach (var landmark in category.Detail.Landmarks)
-                        {
-                            <li>@landmark.Name (Confidence: @landmark.Confidence.ToString("P"))</li>
-                        }
-                    }
-                    else
-                    {
-                        <p class="badge badge-pill badge-success">No landmarks detected</p>
-                    }
+                </div>
+            }
+        </div>
+    </div>
+    @if (ViewData["ImageAnalysisViewModel"] != null)
+    {
+        var imageAnalysisView = (ImageAnalysisViewModel)ViewData["ImageAnalysisViewModel"];
+    <div class="row">
+        <!-- Second Row: Two Columns -->
+        <div class="col-sm-6 small">
+            <!-- Left Column -->
+                <h5>Category:</h5>
+                @if (imageAnalysisView.ImageAnalysisResult.Categories.Count == 0)
+                {
+                    <span class="badge badge-pill badge-danger">No category detected</span>
                 }
+                else
+                {
+                    <ul>
+                        @foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
+                        {
+
+                            <li>@category.Name (Confidence: @category.Score.ToString("P"))</li>
+                            @if (category.Detail?.Landmarks != null && category.Detail.Landmarks.Count > 0)
+                            {
+                                <h5>Landmarks:</h5>
+                                <ul>
+                                    @foreach (var landmark in category.Detail.Landmarks)
+                                    {
+                                        <li>@landmark.Name (Confidence: @landmark.Confidence.ToString("P"))</li>
+                                    }
+                                </ul>
+                            }
+                        }
+                    </ul>
+                }
+
                 <hr />
                 <h5>Tags</h5>
                 @if (imageAnalysisView.ImageAnalysisResult.Tags.Count == 0)
@@ -87,7 +92,7 @@
                         <span class="badge badge-pill badge-success">@tag.Name - @tag.Confidence.ToString("P")</span>
                     }
                 }
-               
+
                 <hr />
                 <h5>Object Detection</h5>
                 @if (imageAnalysisView.ImageAnalysisResult.Objects.Count == 0)
@@ -106,9 +111,9 @@
                 <hr />
 
                 <h5>Brands</h5>
-                @if(imageAnalysisView.ImageAnalysisResult.Brands.Count == 0)
+                @if (imageAnalysisView.ImageAnalysisResult.Brands.Count == 0)
                 {
-                    <span class="badge badge-pill badge-danger">No brands detected</span>    
+                    <span class="badge badge-pill badge-danger">No brands detected</span>
                 }
                 else
                 {
@@ -119,6 +124,10 @@
                 }
 
                 <hr />
+        </div>
+
+        <div class="col-sm-6 small">
+            <!-- Right Column -->
                 <h5>Face Detection</h5>
                 @if (imageAnalysisView.ImageAnalysisResult.Faces.Count == 0)
                 {
@@ -175,19 +184,21 @@
                     <span class="badge badge-pill badge-danger">Violent score: @imageAnalysisView.ImageAnalysisResult.Adult.GoreScore.ToString("P")</span>
                 </p>
                 <hr />
-
-            }
-
         </div>
     </div>
+        <script>
+            // Find all <span> elements in the document
+            var spanElements = document.getElementsByTagName("span");
+
+            // Add the "custom-span" class to each <span> element
+            for (var i = 0; i < spanElements.length; i++) {
+                spanElements[i].classList.add("custom-span");
+            }
+
+        </script>
+    }
+
+
 }
-<script>
-     // Find all <span> elements in the document
-     var spanElements = document.getElementsByTagName("span");
 
-     // Add the "custom-span" class to each <span> element
-     for (var i = 0; i < spanElements.length; i++) {
-         spanElements[i].classList.add("custom-span");
-     }
 
-</script>
