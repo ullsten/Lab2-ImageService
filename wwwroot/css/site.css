@@ -73,10 +73,8 @@ body {
     margin-right:auto;*/
 }
 
-.thumbnail-form {
-    /*width: 100px;*/
-    /*    margin-left:auto;
-    margin-right:auto;*/
+.img-thumbnail {
+    transition: transform 0.3s; /* Add a smooth transition for zoom effect */
 }
 
 .content {
@@ -132,9 +130,16 @@ body {
     display: block;
     max-width: 90%;
     max-height: 90%;
-    width: auto; /* Allow the width to adjust based on aspect ratio */
-    height: auto; /* Allow the height to adjust based on aspect ratio */
+    width: auto;
+    height: auto;
+  
 }
+
+/* Zoom effect on hover */
+.hover-zoom:hover {
+    transform: scale(1.2); /* Increase the size of the image on hover */
+}
+
 
 /* Style the close button */
 .close {
@@ -152,7 +157,11 @@ body {
     cursor: pointer;
 }
 
-
+.card-body{
+    height:150px;
+    display: flex;
+    flex-direction:column;
+}
 /************************************************************/
 
 @media (max-width: 600px) {

@@ -1,6 +1,7 @@
 ﻿using Lab2_ImageService.Models;
 using Lab2_ImageService.Models.ViewModel;
 using Lab2_ImageService.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics;
@@ -69,11 +70,12 @@ namespace Lab2_ImageService.Controllers
                 }
 
                 // Create an ImageModel to hold image information
-                var imageModel = new ImageModel
-                {
-                    FileName = timestampedFileName,
-                    FilePath = filePath,
-                };
+                //var imageModel = new ImageModel
+                //{
+                //    FileName = timestampedFileName,
+                //    FilePath = filePath,
+                    
+                //};
 
                 // Using service to analyze the image
                 var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(filePath);
@@ -128,11 +130,11 @@ namespace Lab2_ImageService.Controllers
                     }
 
                     // Create an ImageModel to hold image information
-                    var imageModel = new ImageModel
-                    {
-                        FileName = timestampedFileName,
-                        FilePath = localImagePath,
-                    };
+                    //var imageModel = new ImageModel
+                    //{
+                    //    FileName = timestampedFileName,
+                    //    FilePath = localImagePath,
+                    //};
 
                     // Using service to analyze the locally saved image
                     var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(localImagePath);
@@ -193,6 +195,7 @@ namespace Lab2_ImageService.Controllers
                 {
                     FileName = Path.GetFileName(filePath),
                     FilePath = filePath,
+                    UploadedTimestamp = new FileInfo(filePath).CreationTime,
                 })
                 .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();
@@ -202,6 +205,7 @@ namespace Lab2_ImageService.Controllers
                 {
                     FileName = Path.GetFileName(filePath),
                     FilePath = filePath,
+                    UploadedTimestamp = new FileInfo(filePath).CreationTime,
                 })
                 .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();
@@ -212,6 +216,7 @@ namespace Lab2_ImageService.Controllers
                 {
                     FileName = Path.GetFileName(filePath),
                     FilePath = filePath,
+                    UploadedTimestamp = new FileInfo(filePath).CreationTime,
                 })
                 .OrderByDescending(image => ExtractDateFromFileName(image.FileName))
                 .ToList();

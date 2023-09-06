@@ -48,11 +48,19 @@
                 <h5>Category:</h5>
                 foreach (var category in imageAnalysisView.ImageAnalysisResult.Categories)
                 {
-                    <li> @category.Name (Confidence: @category.Score.ToString("P"))</li>
+                    
+                    @if (imageAnalysisView.ImageAnalysisResult.Categories.Count == 0)
+                    {
+                        <span class="badge badge-pill badge-danger">No category detected</span>
+                    }
+                    else
+                    {
+                        <li> @category.Name (Confidence: @category.Score.ToString("P"))</li>
 
-                    <br />
-
+                        <br />
+                    }
                     <hr />
+
                     <h5>Landmarks</h5>
                     if (category.Detail?.Landmarks != null && category.Detail.Landmarks.Any())
                     {
@@ -68,10 +76,18 @@
                 }
                 <hr />
                 <h5>Tags</h5>
-                foreach (var tag in imageAnalysisView.ImageAnalysisResult.Tags)
+                @if (imageAnalysisView.ImageAnalysisResult.Tags.Count == 0)
                 {
-                    <span class="badge badge-pill badge-success">@tag.Name - @tag.Confidence.ToString("P")</span>
+                    <span class="badge badge-pill badge-danger">No tags detected</span>
                 }
+                else
+                {
+                    foreach (var tag in imageAnalysisView.ImageAnalysisResult.Tags)
+                    {
+                        <span class="badge badge-pill badge-success">@tag.Name - @tag.Confidence.ToString("P")</span>
+                    }
+                }
+               
                 <hr />
                 <h5>Object Detection</h5>
                 @if (imageAnalysisView.ImageAnalysisResult.Objects.Count == 0)
@@ -92,7 +108,7 @@
                 <h5>Brands</h5>
                 @if(imageAnalysisView.ImageAnalysisResult.Brands.Count == 0)
                 {
-                    <span class="badge badge-pill badge-danger">No object detected</span>    
+                    <span class="badge badge-pill badge-danger">No brands detected</span>    
                 }
                 else
                 {

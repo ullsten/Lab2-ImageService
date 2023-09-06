@@ -67,13 +67,15 @@ namespace Lab2_ImageService.Services
 
                 ImageAnalysis results;
 
-                // Check if the input is a URL or a local file path
                 if (Uri.IsWellFormedUriString(imageFileOrUrl, UriKind.Absolute))
                 {
                     // Input is a URL, download the image from the URL
-                    using (Stream imageStream = new WebClient().OpenRead(imageFileOrUrl))
+                    using (HttpClient httpClient = new HttpClient())
                     {
-                        results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+                        using (Stream imageStream = await httpClient.GetStreamAsync(imageFileOrUrl))
+                        {
+                            results = await client.AnalyzeImageInStreamAsync(imageStream, visualFeatures: features);
+                        }
                     }
                 }
                 else

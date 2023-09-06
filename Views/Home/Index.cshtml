@@ -2,12 +2,17 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="text-center text-white mt-3">
+    <h2>Lab 2 Microsoft Azure services</h2>
+</div>
 <div class="section">
+  
     <div class="centered">
         <div class="button-container">
             <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>
             <a class="btn" asp-area="" asp-controller="Predict" asp-action="Index">Image Prediction</a>
             <a class="btn" asp-area="" asp-controller="" asp-action="">Face AI</a>
+            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
         </div>
         <div class="cell-wrapper">
             <div class="cell-core"></div>

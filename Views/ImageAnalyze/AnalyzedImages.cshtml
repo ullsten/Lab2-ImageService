@@ -39,12 +39,12 @@
     <div class="">
         <div class="text-center">
             <!-- Buttons to toggle image categories -->
-            <button id="showUploadedImages">Show Uploaded Images</button>
-            <button id="showThumbnails">Show Thumbnails</button>
-            <button id="showObjectImages">Show Objects Images</button>
+            <button id="showUploadedImages">Original Images</button>
+            <button id="showThumbnails">Thumbnails</button>
+            <button id="showObjectImages">Objects Images</button>
         </div>
 
-        <div class="latest-image" style="display: ;">
+        <div class="latest-image">
             <!-- Display uploaded images -->
             <h3 class="text-white">Latest analyzed image</h3>
             <div class="row justify-content-center">
@@ -54,9 +54,9 @@
                     {
                         <div class="col-md-2 mb-3">
                             <div class="card">
-                                <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid" alt="Uploaded Image" style="height: 200px;">
-                                <div class="card-body d-flex flex-column" style="height: 120px;">
-                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
+                                <div class="card-body ">
+                                    <p>Uploaded: @image.UploadedTimestamp</p>
                                     <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
                                 </div>
                             </div>
@@ -67,9 +67,9 @@
                     {
                         <div class="col-md-2 mb-3">
                             <div class="card">
-                                <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid" alt="Thumbnail Image" style="height: 200px;">
-                                <div class="card-body d-flex flex-column" style="height: 120px;">
-                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Thumbnail Image" style="height: 200px;">
+                                <div class="card-body">
+                                    <p>Uploaded: @image.UploadedTimestamp</p>
                                     <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
                                 </div>
                             </div>
@@ -80,8 +80,8 @@
                     {
                         <div class="col-md-2 mb-3">
                             <div class="card">
-                                <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid" alt="Object Image" style="height: 200px;">
-                                <div class="card-body d-flex flex-column" style="height: 120px;">
+                                <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
+                                <div class="card-body ">
                                     <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
                                     <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
                                 </div>
@@ -106,9 +106,9 @@
                 {
                     <div class="col-md-2 mb-3">
                         <div class="card">
-                            <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid" alt="Object Image" style="height: 200px;">
-                            <div class="card-body d-flex flex-column" style="height: 120px;">
-
+                            <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
+                            <div class="card-body ">
+                                <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
                                 <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
         <div class="thumbnails" style="display: none;" id="thumbnailsDiv">
             <!-- Display thumbnail images -->
             <div class="text-center mb-3 mt-3">
-                <h3 class="text-white">Uploaded Images</h3>
+                <h3 class="text-white">Thumbnails</h3>
                 <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
             </div>
             <div class="row">
@@ -129,8 +129,8 @@
                 {
                     <div class="col-md-2 mb-3">
                         <div class="card">
-                            <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid" alt="Thumbnail Image" style="height: 200px;">
-                            <div class="card-body d-flex flex-column" style="height: 120px;">
+                            <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Thumbnail Image" style="height: 200px;">
+                            <div class="card-body ">
 
                                 <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
                             </div>
@@ -144,7 +144,7 @@
         <div class="object-images" style="display: none;" id="objectImagesDiv">
             <!-- Display object images -->
             <div class="text-center mb-3 mt-3">
-                <h3 class="text-white">Uploaded Images</h3>
+                <h3 class="text-white">Object Images</h3>
                 <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
             </div>
             
@@ -153,8 +153,8 @@
                 {
                     <div class="col-md-3 mb-3">
                         <div class="card">
-                            <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid" alt="Uploaded Image" style="height: 200px;">
-                            <div class="card-body d-flex flex-column" style="height: 120px;">
+                            <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
+                            <div class="card-body ">
 
                                 <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
                             </div>
@@ -172,105 +172,6 @@
     <img class="modal-content" id="modalImage">
 </div>
 
-
-<script>
-    // Get the modal element and close button
-    var modal = document.getElementById('myModal');
-    var modalImage = document.getElementById('modalImage');
-    var closeBtn = document.getElementsByClassName('close')[0];
-
-    // Function to open the modal and set the image source
-    function openModal(imageSrc) {
-        modal.style.display = 'block';
-        modalImage.src = imageSrc;
-    }
-
-    // Function to close the modal
-    function closeModal() {
-        modal.style.display = 'none';
-    }
-
-    // Attach click event handlers to the images
-    var images = document.querySelectorAll('.img-thumbnail');
-
-    images.forEach(function (image) {
-        image.addEventListener('click', function () {
-            openModal(this.src);
-        });
-    });
-
-    // Attach click event handler to close button
-    closeBtn.addEventListener('click', closeModal);
-
-    // Close the modal when the user clicks outside of it
-    window.addEventListener('click', function (event) {
-        if (event.target == modal) {
-            closeModal();
-        }
-    });
-</script>
-
-
-<script>
-    // Function to scroll to the top of the page
-    function scrollToTop() {
-        $('html, body').animate({ scrollTop: 0 }, 200); // 1000 milliseconds (1 second) for smooth scrolling
-        // Hide other image categories
-        $(".thumbnails").hide();
-        $(".object-images").hide();
-        $(".uploaded-images").hide();
-    }
-</script>
-
-<!-- JavaScript/jQuery code to toggle visibility -->
-<script>
-    $(document).ready(function () {
-        // Function to scroll to a specific div
-        function scrollToDiv(divId) {
-            $('html, body').animate({
-                scrollTop: $(divId).offset().top
-            }, 1000); // 1000 milliseconds (1 second) for smooth scrolling
-        }
-
-        // Show Uploaded Images and scroll to the Uploaded Images div
-        $("#showUploadedImages").click(function () {
-            // Hide other image categories
-            $(".thumbnails").hide();
-            $(".object-images").hide();
-
-            // Toggle the visibility of the Uploaded Images category
-            $(".uploaded-images").toggle();
-
-            // Scroll to the Uploaded Images div
-            scrollToDiv("#uploadedImagesDiv");
-        });
-
-        // Show Thumbnails and scroll to the Thumbnails div
-        $("#showThumbnails").click(function () {
-            // Hide other image categories
-            $(".uploaded-images").hide();
-            $(".object-images").hide();
-
-            // Toggle the visibility of the Thumbnails category
-            $(".thumbnails").toggle();
-
-            // Scroll to the Thumbnails div
-            scrollToDiv("#thumbnailsDiv");
-        });
-
-        // Show Objects Images and scroll to the Objects Images div
-        $("#showObjectImages").click(function () {
-            // Hide other image categories
-            $(".uploaded-images").hide();
-            $(".thumbnails").hide();
-
-            // Toggle the visibility of the Object Images category
-            $(".object-images").toggle();
-
-            // Scroll to the Object Images div
-            scrollToDiv("#objectImagesDiv");
-        });
-    });
-</script>
+<script src="~/js/analyzed_Images.js"></script>
 
 
