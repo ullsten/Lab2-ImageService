@@ -146,13 +146,6 @@ namespace Lab2_ImageService.Controllers
                         await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
                     }
 
-                    // Create an ImageModel to hold image information
-                    //var imageModel = new ImageModel
-                    //{
-                    //    FileName = timestampedFileName,
-                    //    FilePath = localImagePath,
-                    //};
-
                     // Using service to analyze the locally saved image
                     var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(localImagePath);
 
