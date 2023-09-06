@@ -1,3 +1,4 @@
+###https://lab2-imageservice.azurewebsites.net/
 # Lab 2 - Image Services in Azure AI
 
 In this assignment, you will use AI components for images in Azure.
