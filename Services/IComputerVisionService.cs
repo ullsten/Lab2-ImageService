@@ -7,6 +7,8 @@ namespace Lab2_ImageService.Services
     {
         Task<ImageAnalysisViewModel> AnalyzeImageAsync(string imageUrl);
         Task GetThumbnail(string imageFile, int width, int height);
-        void DrawBoundingBox(ImageAnalysis analysis, string imageFile);
+        void DrawBoundingBoxObject(ImageAnalysis analysis, string imageFile);
+        void DrawBoundingBoxFace(ImageAnalysis analysis, string imageFile);
+        void DrawBoundingBoxObject_Face(ImageAnalysis analysis, string imageFile);
     }
 }

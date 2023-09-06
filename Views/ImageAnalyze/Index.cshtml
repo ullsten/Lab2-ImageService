@@ -38,19 +38,27 @@
             </div>
             
             <div class="form-check">
-                <label for="CreateObjectBox" class="">Create Bounding box:</label>
+                <label for="createObjectBox" class="">Create Bounding box object(s):</label>
                 <input type="checkbox" class="" id="createObjectBox" name="CreateObjectBox">
+            </div>
+            <div class="form-check">
+                <label asp="createFaceBox" class="">Create Bounding box face(s):</label>
+                <input type="checkbox" class="" id="createFaceBox" name="CreateFaceBox">
+            </div>
+            <div class="form-check">
+                <label asp="CreateAll" class="">Draw and create everything:</label>
+                <input type="checkbox" class="" id="createAll" name="CreateAll">
             </div>
 
             <div id="thumbnailFields" style="display: none;">
                 <div class="form-group">
                     <label for="ThumbnailWidth">Thumbnail Width (in pixels):</label>
-                    <input type="number" class="thumbnail-form form-control" id="thumbnailWidth" name="ThumbnailWidth">
+                    <input type="number" class="thumbnail-form form-control" id="thumbnailWidth" name="ThumbnailWidth" placeholder="default 50px">
                 </div>
 
                 <div class="form-group">
                     <label for="thumbnailHeight">Thumbnail Height (in pixels):</label>
-                    <input type="number" class="thumbnail-form form-control" id="thumbnailHeight" name="ThumbnailHeight">
+                    <input type="number" class="thumbnail-form form-control" id="thumbnailHeight" name="ThumbnailHeight" placeholder="default is 50px">
                 </div>
            </div>
 

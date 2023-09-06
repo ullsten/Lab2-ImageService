@@ -8,7 +8,8 @@ namespace Lab2_ImageService.Models.ViewModel
         public IFormFile FormFile { get; set; }
         public ImageAnalysis ImageAnalysisResult { get; set; }
         public List<LandmarksModel> Landmarks { get; set; }
-        public bool CreateObjectBox { get; set; }
+        //public bool CreateObjectBox { get; set; }
+        //public bool CreateObjectFace { get; set; }
 
     }
 }

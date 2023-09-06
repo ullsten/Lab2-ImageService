@@ -157,12 +157,12 @@ namespace Lab2_ImageService.Services
             }
         }
 
-        public void DrawBoundingBox(ImageAnalysis analysis, string imageFile)
+        public void DrawBoundingBoxObject(ImageAnalysis analysis, string imageFile)
         {
             // Get objects in the image
             if (analysis.Objects.Count > 0)
             {
-                Console.WriteLine("Objects in image:");
+                Debug.WriteLine("Objects in image:");
 
                 // Prepare image for drawing
                 Image image = Image.FromFile(imageFile);
@@ -174,7 +174,7 @@ namespace Lab2_ImageService.Services
                 foreach (var detectedObject in analysis.Objects)
                 {
                     // Print object name
-                    Console.WriteLine($" - {detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
+                    Debug.WriteLine($" - {detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
 
                     // Draw object bounding box
                     var r = detectedObject.Rectangle;
@@ -190,8 +190,87 @@ namespace Lab2_ImageService.Services
 
                 image.Save(outputFilePath);
                 
-                Console.WriteLine("Results saved in " + outputFilePath);
+                Debug.WriteLine("Results saved in " + outputFilePath);
             }
         }
+        
+        public void DrawBoundingBoxFace(ImageAnalysis analysis, string imageFile)
+        {
+            // Get objects in the image
+            if (analysis.Faces.Count > 0)
+            {
+                Debug.WriteLine("Face(s) in image:");
+
+                // Prepare image for drawing
+                Image image = Image.FromFile(imageFile);
+                Graphics graphics = Graphics.FromImage(image);
+                Pen pen = new Pen(Color.Red, 3);
+                Font font = new Font("Arial", 16);
+                SolidBrush brush = new SolidBrush(Color.Black);
+
+                // Draw and annotate each face
+                foreach (var face in analysis.Faces)
+                {
+                    var r = face.FaceRectangle;
+                    Rectangle rect = new Rectangle(r.Left, r.Top, r.Width, r.Height);
+                    graphics.DrawRectangle(pen, rect);
+                    string annotation = $"Person at approximately {r.Left}, {r.Top}";
+                    graphics.DrawString(annotation, font, brush, r.Left, r.Top);
+                }
+
+                // Save annotated image with the same name as the input image
+                string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+                string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_face.jpg";
+                string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
+
+                image.Save(outputFilePath);
+                
+                Debug.WriteLine("Results saved in " + outputFilePath);
+            }
+        }
+
+        public void DrawBoundingBoxObject_Face(ImageAnalysis analysis, string imageFile)
+        {
+            // Prepare image for drawing
+            Image image = Image.FromFile(imageFile);
+            Graphics graphics = Graphics.FromImage(image);
+            Pen objectPen = new Pen(Color.Cyan, 3);
+            Pen facePen = new Pen(Color.Magenta, 3);
+            Font font = new Font("Arial", 16);
+            SolidBrush brush = new SolidBrush(Color.Black);
+
+            // Draw and annotate objects
+            foreach (var detectedObject in analysis.Objects)
+            {
+                Debug.WriteLine($"Object: {detectedObject.ObjectProperty} (confidence: {detectedObject.Confidence.ToString("P")})");
+
+                var objectRect = detectedObject.Rectangle;
+                Rectangle objectBoundingBox = new Rectangle(objectRect.X, objectRect.Y, objectRect.W, objectRect.H);
+                graphics.DrawRectangle(objectPen, objectBoundingBox);
+                graphics.DrawString(detectedObject.ObjectProperty, font, brush, objectRect.X, objectRect.Y);
+            }
+
+            // Draw and annotate faces
+            foreach (var face in analysis.Faces)
+            {
+                Debug.WriteLine($"Face: Person at approximately {face.FaceRectangle.Left}, {face.FaceRectangle.Top}");
+
+                var faceRect = face.FaceRectangle;
+                Rectangle faceBoundingBox = new Rectangle(faceRect.Left, faceRect.Top, faceRect.Width, faceRect.Height);
+                graphics.DrawRectangle(facePen, faceBoundingBox);
+                string annotation = $"Person at approximately {faceRect.Left}, {faceRect.Top}";
+                graphics.DrawString(annotation, font, brush, faceRect.Left, faceRect.Top);
+            }
+
+            // Save annotated image with the same name as the input image
+            string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Objects");
+            string outputFileName = Path.GetFileNameWithoutExtension(imageFile) + "_object.jpg";
+            string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
+
+            image.Save(outputFilePath);
+
+            Debug.WriteLine("Results saved in " + outputFilePath);
+        }
+
     }
 }
