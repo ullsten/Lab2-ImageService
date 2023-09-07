@@ -44,7 +44,7 @@ namespace Lab2_ImageService.Controllers
         }
 
         [HttpPost] //Upload to wwwRoot folder
-        public async Task<IActionResult> UploadTowwwRoot(IFormFile imgfile)
+        public async Task<IActionResult> UploadTowwwRoot(IFormFile imgfile, string folderName)
         {
             if (imgfile != null && imgfile.Length > 0)
             {
@@ -52,7 +52,7 @@ namespace Lab2_ImageService.Controllers
                 if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif")
                 {
                     // Specify the folder where you want to save the image
-                    var imgSavePath = Path.Combine(_hostEnvironment.WebRootPath, "UploadedImages");
+                    var imgSavePath = Path.Combine(_hostEnvironment.WebRootPath, folderName);
 
                     // Ensure the directory exists, create it if needed
                     if (!Directory.Exists(imgSavePath))

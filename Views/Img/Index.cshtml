@@ -17,12 +17,19 @@
 <center class="custom-test">
         <h1 class="bg-info">Add file to wwwRootPath</h1>
     <hr />
-   <div class="mb-3">
+    <div class="mb-3">
         <form method="post" enctype="multipart/form-data" asp-controller="Img" asp-action="UploadTowwwRoot">
+            <select name="folderName">
+                <option value="UploadedImages">Uploaded Images</option>
+                <option value="Objects">Objects</option>
+                <option value="Thumbnails">Thumbnails</option>
+            </select>
+            <br /><br />
             <input type="file" name="imgfile" />
             <input type="submit" value="Upload" />
         </form>
-   </div>
+    </div>
+
 
    <hr />
 
