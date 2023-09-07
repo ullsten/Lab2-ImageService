@@ -43,7 +43,7 @@
             <button id="showUploadedImages">Original Images</button>
             <button id="showThumbnails">Thumbnails</button>
             <button id="showObjectImages">Objects Images</button>
-            <a class="" asp-area="" asp-controller="Img" asp-action="Index"><button>Delete/Add Images</button></a>
+            <a class="" asp-area="" asp-controller="ImageAnalyze" asp-action="UploadTowwwRoot"><button>Delete/Add Images</button></a>
         </div>
 
         <div class="latest-image">
@@ -60,6 +60,7 @@
                                 <div class="card-body ">
                                     <p>Uploaded: @image.UploadedTimestamp</p>
                                     <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
+                                    <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
                                 </div>
                             </div>
                         </div>
@@ -73,6 +74,7 @@
                                 <div class="card-body">
                                     <p>Uploaded: @image.UploadedTimestamp</p>
                                     <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
+                                    <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a>
                                 </div>
                             </div>
                         </div>
@@ -83,15 +85,14 @@
                         <div class="col-md-2 mb-3">
                             <div class="card">
                                 <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
-                                <div class="card-body ">
+                                <div class="card-body">
                                     <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
                                     <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
+                                    <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
                                 </div>
                             </div>
                         </div>
                     }
-
-
                 }
             </div>
         </div>
@@ -112,6 +113,7 @@
                             <div class="card-body ">
                                 <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
                                 <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
+                                <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -135,6 +137,7 @@
                             <div class="card-body ">
 
                                 <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
+                                <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a>
                             </div>
                         </div>
                     </div>
@@ -159,6 +162,7 @@
                             <div class="card-body ">
 
                                 <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
+                                <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
                             </div>
                         </div>
                     </div>

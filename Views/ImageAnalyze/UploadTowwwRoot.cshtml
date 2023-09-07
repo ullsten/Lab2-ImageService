@@ -7,22 +7,22 @@
 
 <style>
     .custom-test {
-        margin-top:3em;
+        margin-top: 3em;
         border-radius: 5px 5px 5px 5px;
-        background-color:white;
+        background-color: white;
     }
 </style>
 
 <center class="custom-test">
-        <h1 class="bg-info">Delete Images</h1>
+    <h1 class="bg-info">Delete Images</h1>
     <hr />
-   <div class="mb-3">
-        <form method="post" enctype="multipart/form-data" asp-controller="Img" asp-action="Index">
+    <div class="mb-3">
+        <form method="post" enctype="multipart/form-data" asp-controller="ImageAnalyze" asp-action="UploadTowwwRoot">
             <input type="file" name="imgfile" />
             <input type="submit" value="Upload" />
         </form>
-   </div>
-   <hr />
+    </div>
+    <hr />
     <h2>Original Images</h2>
     <table class="table">
         <tr>
@@ -35,7 +35,7 @@
             <tr>
                 <td>@item.Name</td>
                 <td><img src="/UploadedImages/@item.Name" height="80" width="120" /></td>
-                <td><a href="@Url.Action("Delete", "Img", new { imgdel = item.Name })">Delete</a></td>
+                <td><a href="@Url.Action("Delete", "ImageAnalyze", new { imgdel = item.Name })">Delete</a></td>
             </tr>
         }
 
@@ -54,7 +54,7 @@
                 <td>@item.Name</td>
                 <td><img src="~/Objects/@item.Name" height="80" width="120" /></td>
                 <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", imgdel = item.Name })">
+                    <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Objects", imgdel = item.Name })">
                         Delete
                     </a>
                 </td>
@@ -76,7 +76,7 @@
                 <td>@item.Name</td>
                 <td><img src="~/Thumbnails/@item.Name" height="80" width="120" /></td>
                 <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", imgdel = item.Name })">
+                    <a href="@Url.Action("Delete", "ImageAnalyze", new { folderName = "Thumbnails", imgdel = item.Name })">
                         Delete
                     </a>
                 </td>
