@@ -4,7 +4,9 @@
 @{
     var thumbImages = ViewData["Thumbnail_Images"];
 }
-
+@{
+    var uploadSuccessMessage = ViewData["UploadSuccess"] as string;
+}
 <style>
     .custom-test {
         margin-top:3em;
@@ -14,16 +16,22 @@
 </style>
 
 <center class="custom-test">
-        <h1 class="bg-info">Delete Images</h1>
+        <h1 class="bg-info">Add file to wwwRootPath</h1>
     <hr />
    <div class="mb-3">
-        <form method="post" enctype="multipart/form-data" asp-controller="Img" asp-action="Index">
+        <form method="post" enctype="multipart/form-data" asp-controller="Img" asp-action="UploadTowwwRoot">
             <input type="file" name="imgfile" />
             <input type="submit" value="Upload" />
         </form>
    </div>
+
    <hr />
-    <h2>Original Images</h2>
+
+   
+
+
+
+   <h2>Original Images</h2>
     <table class="table">
         <tr>
             <th>Image Name</th>
@@ -35,11 +43,12 @@
             <tr>
                 <td>@item.Name</td>
                 <td><img src="/UploadedImages/@item.Name" height="80" width="120" /></td>
-                <td><a href="@Url.Action("Delete", "Img", new { imgdel = item.Name })">Delete</a></td>
+                <td><a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = item.Name})">Delete</a></td>
             </tr>
         }
 
     </table>
+    
     <!-- Display object images -->
     <h2>Object Images</h2>
     <table class="table">
@@ -54,9 +63,7 @@
                 <td>@item.Name</td>
                 <td><img src="~/Objects/@item.Name" height="80" width="120" /></td>
                 <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", imgdel = item.Name })">
-                        Delete
-                    </a>
+                    <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = item.Name })">Delete</a>
                 </td>
             </tr>
         }
@@ -76,9 +83,7 @@
                 <td>@item.Name</td>
                 <td><img src="~/Thumbnails/@item.Name" height="80" width="120" /></td>
                 <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", imgdel = item.Name })">
-                        Delete
-                    </a>
+                    <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = item.Name })">Delete</a>
                 </td>
             </tr>
         }
