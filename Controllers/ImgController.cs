@@ -1,6 +1,7 @@
 ﻿using Lab2_ImageService.Models;
 using Lab2_ImageService.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Lab2_ImageService.Controllers
@@ -68,9 +69,9 @@ namespace Lab2_ImageService.Controllers
                         await imgfile.CopyToAsync(stream);
                     }
 
-                    ViewData["UploadSuccess"] = imgfile.FileName + " Uploaded successfully";
                     // Redirect to the index action or another appropriate action
-                    return RedirectToAction("AnalyzedImages", "ImageAnalyze");
+
+                    return RedirectToAction("Index", "Img");
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace Lab2_ImageService.Controllers
                 System.IO.File.Delete(fullPath);
             }
 
-            return RedirectToAction("AnalyzedImages", "ImageAnalyze");
+            return RedirectToAction("Index", "Img");
         }
 
 
