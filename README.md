@@ -7,7 +7,7 @@ In this assignment, you will use AI components for images in Azure.
 ### What to do
 
 Build an application that uses Azure AI components for images.
-
+I choosed to build 
 ### Technical requirements
 
 The AI components must be called via your C# code and the results handled by your C# code.
@@ -15,6 +15,8 @@ The AI components must be called via your C# code and the results handled by you
 ### Functional requirements
 
 The user must be able to submit information that is processed by the AI component and then the result is presented to the user.
+
+**Note:** For this assignment, I have chosen to build the application using ASP.NET Core MVC.
 
 * **Azure AI** is a suite of AI services that can be used for a variety of tasks, including image processing.
 * **Image services** in Azure AI provide a variety of features for processing images, such as object detection, image classification, and facial recognition.
