@@ -61,7 +61,7 @@
                                 <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
                                 <div class="card-body ">
                                     <h5 style="font-size:15px; color: darkgoldenrod;"> Original image</h5>
-                                    <p>Uploaded: @image.UploadedTimestamp</p>
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                     <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
                                     <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
                                 </div>
@@ -76,7 +76,7 @@
                                 <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Thumbnail Image" style="height: 200px;">
                                 <div class="card-body">
                                     <h5 style="font-size:15px; color: darkgoldenrod;">Thumbnail</h5>
-                                    <p>Uploaded: @image.UploadedTimestamp</p>
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                     <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
                                     <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a>
                                 </div>
@@ -91,7 +91,7 @@
                                 <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
                                 <div class="card-body">
                                     <h5 style="font-size:15px; color:darkgoldenrod">With boxes</h5>
-                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                    <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                     <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
                                     <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
                                 </div>
@@ -116,7 +116,7 @@
                         <div class="card">
                             <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
                             <div class="card-body ">
-                                <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd HH:mm")</p>
+                                <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                 <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
                                 <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
                             </div>
@@ -140,7 +140,7 @@
                         <div class="card">
                             <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Thumbnail Image" style="height: 200px;">
                             <div class="card-body ">
-
+                                <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                 <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
                                 <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a>
                             </div>
@@ -165,7 +165,7 @@
                         <div class="card">
                             <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
                             <div class="card-body ">
-
+                                <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                 <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
                                 <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
                             </div>

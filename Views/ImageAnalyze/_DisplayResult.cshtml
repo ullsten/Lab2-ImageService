@@ -23,9 +23,10 @@
             }
 
             <!-- Description -->
-            <h5>Description</h5>
+            
             @if (ViewData["ImageAnalysisViewModel"] != null)
             {
+                <h5>Description</h5>
                 var imageAnalysisView = (ImageAnalysisViewModel)ViewData["ImageAnalysisViewModel"];
                 <div class="description-container">
                     <!-- Added a container div for description -->
