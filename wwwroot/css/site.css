@@ -157,6 +157,9 @@ body {
 /* Style the images with a cursor pointer for interaction */
 .img-thumbnail {
     cursor: pointer;
+    height:400px;
+    display: block;
+    margin: 0 auto;
 }
 
 .card-body{
@@ -168,23 +171,15 @@ body {
 .successMessage{
     margin-top: 1em;
 }
-/*.description-container {
-    word-wrap: break-word;*/ /* Allow text to wrap onto the next line */
-    /*max-width: 80%;*/ /* Limit the text width to the container's width */
-/*}
 
-.description-text {
-    font-size: 16px;*/ /* Adjust the font size as needed */
-/*}
-
-.confidence-text {
-    font-size: 14px;*/ /* Adjust the font size as needed */
-/*}*/
 /************************************************************/
 
 @media (max-width: 600px) {
     .navbar-toggler {
         display: block;
+    }
+    .img-thumbnail {
+        height: 250px;
     }
 }
 

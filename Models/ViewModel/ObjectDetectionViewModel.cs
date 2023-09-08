@@ -12,6 +12,7 @@ namespace Lab2_ImageService.Models.ViewModel
         [DataType(DataType.Upload)]
         public IFormFile ImageFile { get; set; }
         public List<ObjectInfoViewModel>? DetectedObject { get; set; }
+        public bool NoObjectsDetected { get; set; }
     }
 }
 

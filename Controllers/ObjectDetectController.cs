@@ -1,4 +1,5 @@
-﻿using Lab2_ImageService.Models.ViewModel;
+﻿using Lab2_ImageService.Models;
+using Lab2_ImageService.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 using System.Diagnostics;
@@ -27,10 +28,10 @@ namespace Lab2_ImageService.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
 
   
         public IActionResult FindObject()
@@ -70,8 +71,15 @@ namespace Lab2_ImageService.Controllers
                 else
                 {
                     // Handle the case where neither imagePath nor imageFile is provided.
-                    // You can return an error view or message.
-                    return View("ErrorView");
+                    // You can return a custom view with an error message.
+                    var noObjectsViewModel = new ObjectDetectionViewModel
+                    {
+                        DetectedObject = new List<ObjectInfoViewModel>(),
+                        NoObjectsDetected = true // Add a flag to indicate no objects were detected
+                    };
+
+                    // Return the "FindObject" view with the noObjectsViewModel
+                    return View("FindObject", noObjectsViewModel);
                 }
 
                 // Create a new MemoryStream for object detection
@@ -82,6 +90,19 @@ namespace Lab2_ImageService.Controllers
                     // Create a new MemoryStream for creating the Image object
                     using (MemoryStream imageStreamForDrawing = new MemoryStream(imageData))
                     {
+
+                        // Check if no objects were detected
+                        if (result.Predictions == null || !result.Predictions.Any())
+                        {
+                            var noObjectsViewModel = new ObjectDetectionViewModel
+                            {
+                                DetectedObject = new List<ObjectInfoViewModel>(),
+                                NoObjectsDetected = true // Add a flag to indicate no objects were detected
+                            };
+
+                            // Return a custom view for the case of no detected objects
+                            return View("NoObjectsDetected", noObjectsViewModel);
+                        }
                         // Load the image for drawing
                         Image image = Image.FromStream(imageStreamForDrawing);
                         int h = image.Height;
@@ -129,12 +150,16 @@ namespace Lab2_ImageService.Controllers
                         {
                             // For images from URL, use a timestamp as the filename
                             outputFileName = $"{timestamp}_object.jpg";
+
+                            ViewData["InputImage"] = outputFileName;
                         }
                         else
                         {
                             // For local image files, use the original filename with a timestamp
                             string originalFileName = Path.GetFileNameWithoutExtension(imageFile.FileName);
                             outputFileName = $"{timestamp}_{originalFileName}_object.jpg";
+
+                            ViewData["InputImage"] = outputFileName;
                         }
 
                         string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
@@ -155,7 +180,7 @@ namespace Lab2_ImageService.Controllers
             catch (Exception ex)
             {
                 Debug.WriteLine("Error: " + ex.Message);
-                return View("ErrorView");
+                return View("NoObjectsDetected");
             }
         }
 

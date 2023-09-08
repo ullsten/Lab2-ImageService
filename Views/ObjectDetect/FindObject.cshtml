@@ -1,48 +1,89 @@
 ﻿@model Lab2_ImageService.Models.ViewModel.ObjectDetectionViewModel
 
-<!DOCTYPE html>
-<html>
-<head>
     <title>Object Detection</title>
-</head>
-<body>
-    <center class="bg-secondary">
-        <h1>Object Detection</h1>
 
-
-@using (Html.BeginForm("FindObject", "ObjectDetect", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <div class="form-group">
-        <label for="imageFile">Upload Image File:</label>
-        <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
-    </div>
-
-    <div class="form-group">
-        <label for="imagePath">or Enter Image URL:</label>
-        <input type="text" name="imagePath" id="imagePath" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Detect Objects</button>
-}
-
-
-        @if (Model.DetectedObject != null && Model.DetectedObject.Any())
+<div class="text-center text-white">
+    <h1>Object Detection</h1>
+</div>
+<center class="bg-secondary" style="width: 600px; margin: 0 auto; padding: 5px; border-radius: 5px; text-align: center;">
+    <!-- Form on its own row -->
+    <div style="padding: 10px;">
+        @using (Html.BeginForm("FindObject", "ObjectDetect", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "validateForm()" }))
         {
-            <h2>Detected Objects:</h2>
-            <ul>
-                @foreach (var objectInfo in Model.DetectedObject)
-                {
-                    <li>
-                        <strong>Tag:</strong> @objectInfo.Tag<br />
-                        <strong>Tag Type:</strong> @objectInfo.TagType<br />
-                        <strong>Probability:</strong> @objectInfo.Probability<br />
-                    </li>
-                }
-            </ul>
+            <div class="form-group">
+                <label for="imageFile">Upload Image File:</label>
+                <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+            </div>
 
-            <h2>Annotated Image:</h2>
-            //<img src="../output.jpg" alt="Annotated Image" width="800" height="600" />
+            <div class="form-group">
+                <label for="imagePath">or Enter Image URL:</label>
+                <input type="text" name="imagePath" id="imagePath" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Detect Objects</button>
         }
-    </center>
-</body>
-</html>
+    </div>
+
+    <!-- Result and image on the same row below the form -->
+    <div style="display: flex; flex-direction: row; justify-content: space-between; padding: 10px;">
+        <!-- Left column for the result -->
+        <div style="flex: 1; text-align: left;">
+            @if (Model.DetectedObject != null && Model.DetectedObject.Any())
+            {
+                <h2>Detected Objects:</h2>
+                <table>
+                    @foreach (var objectInfo in Model.DetectedObject.Take(3))
+                    {
+                        <tr>
+                            <td>
+                                <strong>Tag:</strong> @objectInfo.Tag<br />
+                                <strong>Tag Type:</strong> @objectInfo.TagType<br />
+                                <strong>Probability:</strong> @objectInfo.Probability<br />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <p></p>
+            }
+        </div>
+
+        <!-- Right column for the image -->
+        <div style="flex: 1; text-align: center;">
+            @if (!string.IsNullOrEmpty(ViewData["InputImage"] as string))
+            {
+                <img src="/Object_detection18/@ViewData["InputImage"]" class="img-thumbnail" alt="Annotated Image" width="auto" height="300" />
+            }
+        </div>
+    </div>
+</center>
+
+
+
+
+
+<!-- The Modal for images-->
+<div id="myModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+<script src="~/js/analyzed_Images.js"></script>
+
+<script>
+    function validateForm() {
+        var imageFile = document.getElementById("imageFile");
+        var imagePath = document.getElementById("imagePath");
+
+        if (!imageFile.files.length && !imagePath.value) {
+            alert("Please provide either a local image file or an image URL.");
+            location.reload(); // Reload the page to show the form view
+            return false; // Prevent form submission
+        }
+
+        return true; // Form will submit
+    }
+</script>
+

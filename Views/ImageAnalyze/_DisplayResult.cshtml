@@ -1,13 +1,6 @@
 ﻿@using Lab2_ImageService.Models.ViewModel;
 @model Lab2_ImageService.Models.ViewModel.ImageAnalysisViewModel
 
-@{
-    // Create a list for the latest analyzed images
-    var latestOriginalImage = new List<ImageModel>();
-    var latestThumbnail = new List<ImageModel>();
-    var latestObject = new List<ImageModel>();
-}
-
 @using (Html.BeginForm("UploadImage", "ImageAnalyze", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="row mt-3">
@@ -20,12 +13,12 @@
                 @if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
                 {
                     <!-- Display image from URL -->
-                    <img src="@imageUrl" alt="Image from URL" class="img-thumbnail" />
+                    <img src="~/UploadedImages/@ViewData["ImageUrl"]" alt="Image from URL" class="img-thumbnail"/>
                 }
                 else
                 {
                     <!-- Display image from local file -->
-                    <img src="~/UploadedImages/@imageUrl" alt="Uploaded Image" class="img-thumbnail" />
+                    <img src="~/UploadedImages/@ViewData["ImageUrl"]" alt="Uploaded Image" class="img-thumbnail" />
                 }
             }
 
@@ -186,6 +179,13 @@
                 <hr />
         </div>
     </div>
+
+        <!-- The Modal for images-->
+        <div id="myModal" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+
         <script>
             // Find all <span> elements in the document
             var spanElements = document.getElementsByTagName("span");
@@ -196,9 +196,9 @@
             }
 
         </script>
+     
+        <script src="~/js/analyzed_Images.js"></script>
     }
-
-
 }
 
 

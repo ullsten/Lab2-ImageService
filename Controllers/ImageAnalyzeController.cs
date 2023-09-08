@@ -53,15 +53,18 @@ namespace Lab2_ImageService.Controllers
                 Directory.CreateDirectory(fullPath);
             }
 
+            // User upload a local image file
             if (fileUpload.LocalImageFile != null && fileUpload.LocalImageFile.Length > 0)
             {
-                // User upload a local image file
+                
                 var formFile = fileUpload.LocalImageFile;
 
                 // Generate a unique filename with a timestamp
                 string timestampedFileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "_" + formFile.FileName;
 
                 var filePath = Path.Combine(fullPath, timestampedFileName);
+
+                //Store filename for image to use in view 
                 ViewData["ImageUrl"] = timestampedFileName;
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -127,9 +130,9 @@ namespace Lab2_ImageService.Controllers
                     ViewData["SuccessMessage"] = fileUpload.LocalImageFile.FileName + " file image analyzed successfully (without thumbnail and bounding box).";
                 }
             }
+            // User provided an image URL
             else if (!string.IsNullOrEmpty(fileUpload.ImageUrl))
             {
-                // User provided an image URL
                 string imageUrl = fileUpload.ImageUrl;
 
                 // Download the image from the URL and save it locally
@@ -139,12 +142,14 @@ namespace Lab2_ImageService.Controllers
 
                     // Generate a unique filename with a timestamp
                     string timestampedFileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm") + "_" + Path.GetFileName(new Uri(imageUrl).LocalPath);
-                    var localImagePath = Path.Combine(fullPath, timestampedFileName);
+                    var localImagePath = Path.Combine(fullPath, timestampedFileName + ".jpg");
 
                     using (var fileStream = new FileStream(localImagePath, FileMode.Create))
                     {
                         await fileStream.WriteAsync(imageBytes, 0, imageBytes.Length);
                     }
+
+
 
                     // Using service to analyze the locally saved image
                     var imageAnalysis = await _computerVisionService.AnalyzeImageAsync(localImagePath);
@@ -153,7 +158,10 @@ namespace Lab2_ImageService.Controllers
                     {
                         ViewData["ImageAnalysisViewModel"] = imageAnalysis;
                         ViewData["SuccessMessage"] = "Image from URL analyzed successfully";
-                        ViewData["ImageUrl"] = timestampedFileName; // Pass the timestamped image URL to the view
+                        //ViewData["ImageUrl"] = timestampedFileName; // Pass the timestamped image URL to the view
+
+                        // Set the ViewData for the local image URL
+                        ViewData["ImageUrl"] = timestampedFileName + ".jpg";
                     }
 
                     // Define an array of options (checkboxes) and their corresponding actions
