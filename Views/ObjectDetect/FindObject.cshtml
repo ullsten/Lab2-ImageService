@@ -1,0 +1,48 @@
+﻿@model Lab2_ImageService.Models.ViewModel.ObjectDetectionViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Object Detection</title>
+</head>
+<body>
+    <center class="bg-secondary">
+        <h1>Object Detection</h1>
+
+
+@using (Html.BeginForm("FindObject", "ObjectDetect", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+        <label for="imageFile">Upload Image File:</label>
+        <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-group">
+        <label for="imagePath">or Enter Image URL:</label>
+        <input type="text" name="imagePath" id="imagePath" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Detect Objects</button>
+}
+
+
+        @if (Model.DetectedObject != null && Model.DetectedObject.Any())
+        {
+            <h2>Detected Objects:</h2>
+            <ul>
+                @foreach (var objectInfo in Model.DetectedObject)
+                {
+                    <li>
+                        <strong>Tag:</strong> @objectInfo.Tag<br />
+                        <strong>Tag Type:</strong> @objectInfo.TagType<br />
+                        <strong>Probability:</strong> @objectInfo.Probability<br />
+                    </li>
+                }
+            </ul>
+
+            <h2>Annotated Image:</h2>
+            //<img src="../output.jpg" alt="Annotated Image" width="800" height="600" />
+        }
+    </center>
+</body>
+</html>

@@ -1,6 +1,42 @@
-﻿@* @model Newtonsoft.Json.Linq.JObject
+﻿@model Newtonsoft.Json.Linq.JObject
 
-@using (Html.BeginForm("GetObject", "ObjectDetect", FormMethod.Post))
+@using (Html.BeginForm("GetObject3", "ObjectDetect", FormMethod.Post))
+{
+    <div class="bg-danger">
+        @Html.Label("Image URL:")
+        @Html.TextBox("imageUrl", null, new { @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <button type="submit" class="btn btn-primary">Detect Objects</button>
+    </div>
+}
+
+@if (Model != null)
+{
+    <div class="bg-secondary mt-3">
+        <h2>Object Detection Results:</h2>
+        <img src="@ViewData["Image"]" alt="Image" width="400" height="300">
+
+        @if (Model["predictions"] != null)
+        {
+            <h3>Detected Objects:</h3>
+            <ul>
+                @foreach (var prediction in Model["predictions"])
+                {
+                    <li>
+                        <strong>Tag:</strong> @prediction["tagName"]
+                        <br />
+                        <strong>Probability:</strong> @prediction["probability"]
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+
+@* @using (Html.BeginForm("GetObject", "ObjectDetect", FormMethod.Post))
 {
     <div>
         @Html.Label("Image URL:")
@@ -34,7 +70,7 @@
     </table>
 } *@
 
-@model Newtonsoft.Json.Linq.JObject
+@* @model Newtonsoft.Json.Linq.JObject
 
 @using (Html.BeginForm("GetObject", "ObjectDetect", FormMethod.Post))
 {
@@ -104,3 +140,4 @@
     };
 </script>
 
+ *@

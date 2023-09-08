@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Objects\" />
+    <Folder Include="wwwroot\Object_detection18\" />
     <Folder Include="wwwroot\TestFolder\" />
     <Folder Include="wwwroot\Thumbnails\" />
     <Folder Include="wwwroot\UploadedImages\" />

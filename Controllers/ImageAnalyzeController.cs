@@ -83,11 +83,11 @@ namespace Lab2_ImageService.Controllers
                     (fileUpload.CreateAll, () =>
                     {
                         _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        _computerVisionService.DrawBoundingBoxObject_Face(imageAnalysis.ImageAnalysisResult, filePath);
+                        _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, filePath);
                     }),
                         (fileUpload.CreateThumbnail, () => _computerVisionService.GetThumbnail(filePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight)),
-                        (fileUpload.CreateObjectBox, () => _computerVisionService.DrawBoundingBoxObject(imageAnalysis.ImageAnalysisResult, filePath)),
-                        (fileUpload.CreateFaceBox, () => _computerVisionService.DrawBoundingBoxFace(imageAnalysis.ImageAnalysisResult, filePath))
+                        (fileUpload.CreateObjectBox, () => _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, filePath)),
+                        (fileUpload.CreateFaceBox, () => _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, filePath))
                 };
 
                 // Check each option and execute the corresponding action if it's true
@@ -162,11 +162,11 @@ namespace Lab2_ImageService.Controllers
                     (fileUpload.CreateAll, () =>
                     {
                         _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight);
-                        _computerVisionService.DrawBoundingBoxObject_Face(imageAnalysis.ImageAnalysisResult, localImagePath);
+                        _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, localImagePath);
                     }),
                         (fileUpload.CreateThumbnail, () => _computerVisionService.GetThumbnail(localImagePath, fileUpload.ThumbnailWidth, fileUpload.ThumbnailHeight)),
-                        (fileUpload.CreateObjectBox, () => _computerVisionService.DrawBoundingBoxObject(imageAnalysis.ImageAnalysisResult, localImagePath)),
-                        (fileUpload.CreateFaceBox, () => _computerVisionService.DrawBoundingBoxFace(imageAnalysis.ImageAnalysisResult, localImagePath))
+                        (fileUpload.CreateObjectBox, () => _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, localImagePath)),
+                        (fileUpload.CreateFaceBox, () => _computerVisionService.DrawBoundingBoxes(imageAnalysis.ImageAnalysisResult, localImagePath))
                 };
 
                     // Check each option and execute the corresponding action if it's true

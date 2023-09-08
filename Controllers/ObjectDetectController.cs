@@ -1,20 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Lab2_ImageService.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
-using System;
+using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using Microsoft.Extensions.Hosting;
-using Rectangle = System.Drawing.Rectangle;
-using Image = System.Drawing.Image;
 using Color = System.Drawing.Color;
-using Lab2_ImageService.Models;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
-using System.Net;
-using Newtonsoft.Json;
-using System.Text;
-using Lab2_ImageService.Services;
-using Newtonsoft.Json.Linq;
+using Image = System.Drawing.Image;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Lab2_ImageService.Controllers
 {
@@ -22,12 +13,18 @@ namespace Lab2_ImageService.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IComputerVisionService _computerVisionService;
-        public ObjectDetectController(IConfiguration configuration, IWebHostEnvironment hostEnvironment, IComputerVisionService computerVisionService)
+        private readonly ICustomVisionPredictionClient _predictionClient;
+        private readonly ILogger<ObjectDetectController> _logger;
+        public ObjectDetectController(
+            IConfiguration configuration, 
+            IWebHostEnvironment hostEnvironment, 
+            ICustomVisionPredictionClient predictionClient, 
+            ILogger<ObjectDetectController> logger)
         {
             _configuration = configuration;
             _hostEnvironment = hostEnvironment;
-            _computerVisionService = computerVisionService;
+            _predictionClient = predictionClient;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -35,50 +32,135 @@ namespace Lab2_ImageService.Controllers
             return View();
         }
 
-        
-
-        [HttpGet]
-        public ActionResult GetObject()
+  
+        public IActionResult FindObject()
         {
-            // Pass the imageUrl to the view
-            return View();
+            var viewModel = new ObjectDetectionViewModel();
+
+            return View(viewModel);
         }
+
+
 
         [HttpPost]
-        public async Task<ActionResult> GetObject(string imageUrl)
+        public async Task<IActionResult> FindObject(string imagePath, IFormFile imageFile)
         {
+            try
+            {
+                Guid project_id = Guid.Parse(_configuration["ProjectID_Object"]);
+                string model_name = _configuration["ModelName_Object"];
 
-            string prediction_endpoint = _configuration["PredictionEndpoint"];
-            string prediction_key = _configuration["PredictionKey"];
-            Guid project_id = Guid.Parse(_configuration["ProjectID_Object"]);
-            string model_name = _configuration["ModelName_Object"];
+                byte[] imageData;
 
-            // Create the HttpClient
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Prediction-Key", prediction_key);
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    using (HttpClient httpClient = new HttpClient())
+                    {
+                        imageData = await httpClient.GetByteArrayAsync(imagePath);
+                    }
+                }
+                else if (imageFile != null && imageFile.Length > 0)
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await imageFile.CopyToAsync(stream);
+                        imageData = stream.ToArray();
+                    }
+                }
+                else
+                {
+                    // Handle the case where neither imagePath nor imageFile is provided.
+                    // You can return an error view or message.
+                    return View("ErrorView");
+                }
 
-            // Create the request body
-            var requestBody = new { Url = imageUrl };
-            var jsonBody = JsonConvert.SerializeObject(requestBody);
+                // Create a new MemoryStream for object detection
+                using (MemoryStream imageStream = new MemoryStream(imageData))
+                {
+                    var result = _predictionClient.DetectImage(project_id, model_name, imageStream);
 
-            // Set the content type header
-            var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                    // Create a new MemoryStream for creating the Image object
+                    using (MemoryStream imageStreamForDrawing = new MemoryStream(imageData))
+                    {
+                        // Load the image for drawing
+                        Image image = Image.FromStream(imageStreamForDrawing);
+                        int h = image.Height;
+                        int w = image.Width;
+                        Graphics graphics = Graphics.FromImage(image);
+                        Pen pen = new Pen(Color.Magenta, 3);
+                        Font font = new Font("Arial", 16);
+                        SolidBrush brush = new SolidBrush(Color.Black);
 
-            // Send the POST request to the Custom Vision endpoint
-            var response = await client.PostAsync($"{prediction_endpoint}/customvision/v3.0/Prediction/{project_id}/detect/iterations/{model_name}/url", content);
+                        var viewModel = new ObjectDetectionViewModel
+                        {
+                            DetectedObject = new List<ObjectInfoViewModel>(),
+                        };
 
-            // Read the response content
-            var responseContent = await response.Content.ReadAsStringAsync();
+                        foreach (var prediction in result.Predictions)
+                        {
+                            if (prediction.Probability > 0.5)
+                            {
+                                var objectInfo = new ObjectInfoViewModel
+                                {
+                                    Tag = prediction.TagName,
+                                    TagType = prediction.TagType,
+                                    Probability = prediction.Probability,
+                                };
 
-            // Parse the response JSON
-            var result = JsonConvert.DeserializeObject<dynamic>(responseContent);
+                                viewModel.DetectedObject.Add(objectInfo);
 
-            //Store inpute image url to use in view
-            ViewData["Image"] = imageUrl;
+                                int left = Convert.ToInt32(prediction.BoundingBox.Left * w);
+                                int top = Convert.ToInt32(prediction.BoundingBox.Top * h);
+                                int height = Convert.ToInt32(prediction.BoundingBox.Height * h);
+                                int width = Convert.ToInt32(prediction.BoundingBox.Width * w);
 
-            // Pass the result to the view
-            return View(result);
+                                Rectangle rect = new Rectangle(left, top, width, height);
+                                graphics.DrawRectangle(pen, rect);
+
+                                graphics.DrawString(prediction.TagName, font, brush, left, top);
+                            }
+                        }
+
+                        string objectsFolderPath = Path.Combine(_hostEnvironment.WebRootPath, "Object_detection18");
+                        string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff"); // Generate a timestamp
+
+                        string outputFileName;
+                        if (!string.IsNullOrEmpty(imagePath))
+                        {
+                            // For images from URL, use a timestamp as the filename
+                            outputFileName = $"{timestamp}_object.jpg";
+                        }
+                        else
+                        {
+                            // For local image files, use the original filename with a timestamp
+                            string originalFileName = Path.GetFileNameWithoutExtension(imageFile.FileName);
+                            outputFileName = $"{timestamp}_{originalFileName}_object.jpg";
+                        }
+
+                        string outputFilePath = Path.Combine(objectsFolderPath, outputFileName);
+
+                        if (!Directory.Exists(objectsFolderPath))
+                        {
+                            Directory.CreateDirectory(objectsFolderPath);
+                        }
+                        image.Save(outputFilePath);
+
+                        // Store the input image path or URL in ViewData
+                        ViewData["InputImagePath"] = imagePath;
+
+                        return View("FindObject", viewModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+                return View("ErrorView");
+            }
         }
+
+
+
     }
 }
 
