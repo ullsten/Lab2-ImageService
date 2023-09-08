@@ -1,6 +1,7 @@
 ﻿using Lab2_ImageService.Models;
 using Lab2_ImageService.Models.ViewModel;
 using Lab2_ImageService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -24,6 +25,7 @@ namespace Lab2_ImageService.Controllers
 
         public IActionResult Index(int page = 1, int pageSize = 5)
         {
+
             try
             {
                 // Show success message after uploading image
@@ -41,6 +43,7 @@ namespace Lab2_ImageService.Controllers
             }
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> UploadImage(FileUpload fileUpload)
         {

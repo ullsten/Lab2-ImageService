@@ -21,7 +21,7 @@
     margin-bottom: 20px;
 }
 
-.btn {
+.btn-custom {
     width: 180px;
     font-family: Roboto, sans-serif;
     font-weight: 300;
@@ -38,17 +38,18 @@
     flex-direction: row;
     align-items: center;
     cursor: pointer;
-
+    text-decoration:none;
 }
 
-.btn:hover {
-    transition: 1000ms;
-    padding: 10px 50px;
-    transform: translateY(-0px);
-    background: linear-gradient(90deg, #2269b0 0%, #7eb03d54 100%);
-    color: #0066cc;
-    border: solid 2px #0066cc;
-}
+    .btn-custom:hover {
+        transition: 1000ms;
+        padding: 10px 50px;
+        transform: translateY(-0px);
+        background: linear-gradient(90deg, #2269b0 0%, #7eb03d54 100%);
+        color: #0066cc;
+        border: solid 2px #0066cc;
+        text-decoration: none;
+    }
 
 
 /* Define media query for mobile view */

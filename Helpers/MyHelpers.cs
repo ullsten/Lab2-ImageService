@@ -20,5 +20,15 @@ namespace Lab2_ImageService.Helpers
             // Example: Check if the user agent contains "Mobile" or "Android" (you can adjust this based on your requirements)
             return userAgent.Contains("Mobile") || userAgent.Contains("Android");
         }
+
+        public static bool IsUserSignedIn(HttpContext context)
+        {
+            // Implement your Firebase Auth state check here
+            // For example, you might check if there's a Firebase Auth token in the session.
+            // Return true if the user is signed in, or false otherwise.
+            var firebaseAuthToken = context.Session.GetString("_UserToken");
+
+            return !string.IsNullOrEmpty(firebaseAuthToken);
+        }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Lab2_ImageService.Models;
 using Lab2_ImageService.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Globalization;
 
 namespace Lab2_ImageService.Controllers
 {
-
     public class ImgController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;

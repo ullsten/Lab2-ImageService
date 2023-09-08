@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Lab2_ImageService.Helpers
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -9,11 +11,19 @@
   
     <div class="centered">
         <div class="button-container">
-            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>
-            <a class="btn" asp-area="" asp-controller="Predict" asp-action="Index">Image Prediction</a>
+            <a class="btn-custom" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>
+            <a class="btn-custom" asp-area="" asp-controller="Predict" asp-action="Index">Image Prediction</a>
             @* <a class="btn" asp-area="" asp-controller="FaceDetection" asp-action="Index">Face AI</a> *@
-            <a class="btn" asp-area="" asp-controller="ObjectDetect" asp-action="FindObject">Object Detaction</a>
-            <a class="btn" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
+            <a class="btn-custom" asp-area="" asp-controller="ObjectDetect" asp-action="FindObject">Object Detaction</a>
+            <a class="btn-custom" asp-area="" asp-controller="ImageAnalyze" asp-action="AnalyzedImages">Analyzed Images</a>
+            @if(!MyHelpers.IsUserSignedIn(Context))
+            {
+                <a class="btn-custom" asp-area="" asp-controller="Login" asp-action="SignIn">Sign In</a>
+            }
+            else
+            {
+                <a class="btn-custom" asp-area="" asp-controller="Login" asp-action="LogOut">Logout</a>
+            }
         </div>
         <div class="cell-wrapper">
             <div class="cell-core"></div>

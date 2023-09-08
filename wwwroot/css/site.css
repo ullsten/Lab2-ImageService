@@ -35,6 +35,8 @@ body {
     justify-content:center;
 
 }
+
+
 .navbar-light .navbar-nav .nav-link:hover {
     color: rgb(255, 106, 0); 
 }
@@ -163,7 +165,7 @@ body {
 }
 
 .card-body{
-    height:150px;
+    height:170px;
     display: flex;
     flex-direction:column;
     margin-bottom: 1em;
@@ -202,7 +204,7 @@ body {
 
 
 
-/*@-webkit-keyframes hue-rotate {
+@-webkit-keyframes hue-rotate {
     from {
         -webkit-filter: hue-rotate(0);
         -moz-filter: hue-rotate(0);
@@ -232,6 +234,6 @@ body {
         -ms-filter: hue-rotate(360deg);
         filter: hue-rotate(360deg);
     }
-}*/
+}
 
 

@@ -1,5 +1,4 @@
 ﻿@model Lab2_ImageService.Models.ImageClass
-@* @model Lab2_ImageService.Models.ViewModel.ImagesViewModel *@
 
 @{
     var thumbImages = ViewData["Thumbnail_Images"];
@@ -8,14 +7,19 @@
 
 <style>
     .custom-test {
-        margin-top:3em;
+        margin-top: 3em;
         border-radius: 5px 5px 5px 5px;
-        background-color:white;
+        background-color: white;
+        text-align:center;
+    }
+    .table {
+        width: 100%;
+        margin: 0 auto;
     }
 </style>
 
-<center class="custom-test">
-        <h1 class="bg-info">Add file to wwwRootPath</h1>
+<div class="custom-test">
+    <h1 class="bg-info" style="border-radius: 5px 5px 0px 0px;">Add file to wwwRootPath</h1>
     <hr />
     <div class="mb-3">
         <form method="post" enctype="multipart/form-data" asp-controller="Img" asp-action="UploadTowwwRoot">
@@ -29,66 +33,85 @@
             <input type="submit" value="Upload" />
         </form>
     </div>
+    <hr />
+    <div style="text-align:center;">
+        <h3>Original Images</h3>
+        <div class="table-responsive table-striped table-hover table-active">
+            <table class="table">
+                <tr>
+                    <th>Image Name</th>
+                    <th>Image</th>
+                    <th>Delete</th>
+                </tr>
+                @foreach (var item in Model.FileImage)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td><img src="/UploadedImages/@item.Name" height="80" width="120" /></td>
+                        <td>
+                             <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
+                            <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = item.Name})">Delete</a>
+                            </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+    <div style="text-align:center;">
+
+        @* <!-- Display thumbnail images --> *@
+        <h3>Thumbnails</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-active">
+                <tr>
+                    <th>  </th>
+                    <th>  </th>
+                    <th>  </th>
+                </tr>
+                @foreach (var item in (thumbImages as ImageClass)?.FileImage)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td><img src="~/Thumbnails/@item.Name" height="80" width="120" /></td>
+                        <td>
+                            <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
+                            <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = item.Name })">Delete</a>
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+    <div style="text-align:center;">
+        <!-- Display object images -->
+        <h3>Object Images</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-active">
+                <tr>
+                    <th>  </th>
+                    <th>  </th>
+                    <th>  </th>
+                </tr>
+                @foreach (var item in (objectImages as ImageClass)?.FileImage)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td><img src="~/Objects/@item.Name" height="80" width="120" /></td>
+                        <td>
+                            <a href="~/Objects/@item.Name" download="@item.Name" class="">Download</a>
+                            <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = item.Name })">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+   
 
 
-   <hr />
+</div>
 
-   <h2>Original Images</h2>
-    <table class="table">
-        <tr>
-            <th>Image Name</th>
-            <th>Image</th>
-            <th>Delete</th>
-        </tr>
-        @foreach (var item in Model.FileImage)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td><img src="/UploadedImages/@item.Name" height="80" width="120" /></td>
-                <td><a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = item.Name})">Delete</a></td>
-            </tr>
-        }
 
-    </table>
-    
-    <!-- Display object images -->
-    <h2>Object Images</h2>
-    <table class="table">
-        <tr>
-            <th>Image Name</th>
-            <th>Image</th>
-            <th>Delete</th>
-        </tr>
-        @foreach (var item in (objectImages as ImageClass)?.FileImage)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td><img src="~/Objects/@item.Name" height="80" width="120" /></td>
-                <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = item.Name })">Delete</a>
-                </td>
-            </tr>
-        }
-    </table>
-
-    <!-- Display thumbnail images -->
-    <h2>Thumbnail Images</h2>
-    <table class="table">
-        <tr>
-            <th>Image Name</th>
-            <th>Image</th>
-            <th>Delete</th>
-        </tr>
-        @foreach (var item in (thumbImages as ImageClass)?.FileImage)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td><img src="~/Thumbnails/@item.Name" height="80" width="120" /></td>
-                <td>
-                    <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = item.Name })">Delete</a>
-                </td>
-            </tr>
-        }
-    </table>
-
-</center>

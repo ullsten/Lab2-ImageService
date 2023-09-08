@@ -1,5 +1,8 @@
 using DotNetEnv;
 using Lab2_ImageService.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 using Microsoft.Extensions.Logging;
 
@@ -15,9 +18,33 @@ namespace Lab2_ImageService
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddScoped<IComputerVisionService, ComputerVisionService>();
+            //builder.Services.AddControllersWithViews(options =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //    .RequireAuthenticatedUser()
+            //    .Build();
+            //    options.Filters.Add(new AuthorizeFilter(policy));
+            //});
 
-            //builder.Services.AddScoped<ICustomVisionPredictionClient, CustomVisionPredictionClient>();
+            //builder.Services.AddMvc().AddSessionStateTempDataProvider();
+            //builder.Services.AddSession();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    // Specify the login path here
+                    options.LoginPath = "/Login"; // Customize this path as needed
+                });
+
+            builder.Services.AddScoped<IComputerVisionService, ComputerVisionService>();
             builder.Services.AddSingleton<ICustomVisionPredictionClient>(sp =>
             {
                 IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
@@ -47,6 +74,9 @@ namespace Lab2_ImageService
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",
