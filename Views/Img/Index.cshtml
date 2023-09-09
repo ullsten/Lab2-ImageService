@@ -11,8 +11,9 @@
         margin-top: 3em;
         border-radius: 5px 5px 5px 5px;
         background-color: white;
-        text-align:center;
+        text-align: center;
     }
+
     .table {
         width: 100%;
         margin: 0 auto;
@@ -31,7 +32,7 @@
                 <option value="Prediction-Uploads">Prediction-Uploads</option>
             </select>
             <hr />
-          
+
             @if (MyHelpers.IsUserSignedIn(Context))
             {
                 <input type="file" name="imgfile" />
@@ -40,7 +41,7 @@
             else
             {
                 <div class="alert alert-warning">
-                    You must sign in to upload images.
+                    You must sign in to upload or delete images.
                 </div>
             }
         </form>
@@ -53,7 +54,7 @@
     </div>
     <hr />
 
-   
+
     <div style="text-align:center;">
         <h3>Original Images</h3>
         <div class="table-responsive table-striped table-hover table-active">
@@ -61,17 +62,24 @@
                 <tr>
                     <th>Image Name</th>
                     <th>Image</th>
-                    <th>Delete</th>
+                    <th>Actions</th>
                 </tr>
                 @foreach (var item in Model.FileImage)
                 {
                     <tr>
                         <td>@item.Name</td>
-                        <td><img src="/UploadedImages/@item.Name" height="80" width="120" /></td>
+                        <td><img src="/UploadedImages/@item.Name" class="img-thumbnail" style="height:80px;"></td>
                         <td>
-                             <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
-                            <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = item.Name})">Delete</a>
-                            </td>
+                            @if (MyHelpers.IsUserSignedIn(Context))
+                            {
+                                <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
+                                <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = item.Name})">Delete</a>
+                            }
+                            else
+                            {
+
+                            }
+                        </td>
                     </tr>
                 }
             </table>
@@ -92,14 +100,21 @@
                 {
                     <tr>
                         <td>@item.Name</td>
-                        <td><img src="~/Thumbnails/@item.Name" height="80" width="120" /></td>
+                        <td><img src="~/Thumbnails/@item.Name" class="img-thumbnail" style="height:80px;"></td>
                         <td>
-                            <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
-                            <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = item.Name })">Delete</a>
+
+                            @if (MyHelpers.IsUserSignedIn(Context))
+                            {
+                                <a href="~/Thumbnails/@item.Name" download="@item.Name" class="">Download</a>
+                                <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = item.Name })">Delete</a>
+                            }
+                            else
+                            {
+
+                            }
                         </td>
                     </tr>
                 }
-
             </table>
         </div>
     </div>
@@ -117,20 +132,30 @@
                 {
                     <tr>
                         <td>@item.Name</td>
-                        <td><img src="~/Objects/@item.Name" height="80" width="120" /></td>
+                        <td><img src="~/Objects/@item.Name" class="img-thumbnail" style="height:80px;"></td>
                         <td>
-                            <a href="~/Objects/@item.Name" download="@item.Name" class="">Download</a>
-                            <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = item.Name })">Delete</a>
+                            @if (MyHelpers.IsUserSignedIn(Context))
+                            {
+                                <a href="~/Objects/@item.Name" download="@item.Name" class="">Download</a>
+                                <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = item.Name })">Delete</a>
+                            }
+                            else
+                            {
+
+                            }
                         </td>
                     </tr>
                 }
             </table>
         </div>
     </div>
-
-   
-
-
 </div>
 
 
+<!-- The Modal for images-->
+<div id="myModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+
+<script src="~/js/analyzed_Images.js"></script>

@@ -36,7 +36,6 @@ body {
 
 }
 
-
 .navbar-light .navbar-nav .nav-link:hover {
     color: rgb(255, 106, 0); 
 }
@@ -237,5 +236,7 @@ body {
         filter: hue-rotate(360deg);
     }
 }
+
+
 
 

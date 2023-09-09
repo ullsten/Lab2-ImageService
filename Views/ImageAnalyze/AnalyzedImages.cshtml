@@ -144,7 +144,7 @@
         <!-- Uploaded Images -->
         <div class="uploaded-images" style="display: none;" id="uploadedImagesDiv">
             <!-- Display uploaded images -->
-            <div class="text-center mb-3 mt-3">
+            <div class="text-center mb-3 p-3 bg-info" style="border-radius: 15px 15px 15px 15px;">
                 <h3 class="text-white">Uploaded Images</h3>
                 <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
             </div>
@@ -176,7 +176,7 @@
         <!-- Thumbnails Images -->
         <div class="thumbnails" style="display: none;" id="thumbnailsDiv">
             <!-- Display thumbnail images -->
-            <div class="text-center mb-3 mt-3">
+            <div class="text-center mb-3 p-3 bg-info" style="border-radius: 15px 15px 15px 15px;">
                 <h3 class="text-white">Thumbnails</h3>
                 <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
             </div>
@@ -208,7 +208,7 @@
         <!-- Objects Images -->
         <div class="object-images" style="display: none;" id="objectImagesDiv">
             <!-- Display object images -->
-            <div class="text-center mb-3 mt-3">
+            <div class="text-center mb-3 p-3 bg-info" style="border-radius: 15px 15px 15px 15px;">
                 <h3 class="text-white">Object Images</h3>
                 <button href="#" class="backTopBtn" onclick="scrollToTop()">Back to Top</button>
             </div>
@@ -216,10 +216,10 @@
             <div class="row">
                 @foreach (var image in objectsImages)
                 {
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-2 mb-3">
                         <div class="card">
                             <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
-                            <div class="card-body ">
+                            <div class="card-body">
                                 <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
                                 
                                 @if(MyHelpers.IsUserSignedIn(Context))
