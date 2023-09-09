@@ -28,12 +28,21 @@
                 <option value="Objects">Objects</option>
                 <option value="Thumbnails">Thumbnails</option>
             </select>
-            <br /><br />
+            <hr />
+          
             <input type="file" name="imgfile" />
             <input type="submit" value="Upload" />
         </form>
+        @if (!string.IsNullOrEmpty(TempData["SuccessMessages"] as string))
+        {
+            <div class="alert alert-success mt-3">
+                @TempData["SuccessMessages"]
+            </div>
+        }
     </div>
     <hr />
+
+   
     <div style="text-align:center;">
         <h3>Original Images</h3>
         <div class="table-responsive table-striped table-hover table-active">
@@ -54,7 +63,6 @@
                             </td>
                     </tr>
                 }
-
             </table>
         </div>
     </div>

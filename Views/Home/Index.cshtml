@@ -7,8 +7,14 @@
 <div class="text-center text-white mt-3">
     <h2>Lab 2 Microsoft Azure services</h2>
 </div>
+@if (!string.IsNullOrEmpty(TempData["LogoutMessage"] as string))
+{
+    <div class="alert alert-success mt-3 text-center">
+        @TempData["LogoutMessage"]
+    </div>
+}
 <div class="section">
-  
+ 
     <div class="centered">
         <div class="button-container">
             <a class="btn-custom" asp-area="" asp-controller="ImageAnalyze" asp-action="Index">Image Analyze</a>

@@ -1,0 +1,6 @@
+﻿@if (!string.IsNullOrEmpty(TempData["SuccessMessages"] as string))
+{
+    <div class="alert alert-success mt-3">
+        @TempData["SuccessMessages"]
+    </div>
+}

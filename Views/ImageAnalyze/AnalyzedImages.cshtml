@@ -48,15 +48,29 @@
             {
                 <a class="" asp-area="" asp-controller="Img" asp-action="Index"><button>Delete/Add Images</button></a>
             }
+          
            
         </div>
-     
+        @if (!string.IsNullOrEmpty(TempData["LoginMessage"] as string))
+        {
+            <div class="alert alert-success mt-3 text-center">
+                @TempData["LoginMessage"]
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(ViewData["DeleteSuccess"] as string))
+        {
+            <div class="alert alert-success">
+                @ViewData["DeleteSuccess"]
+            </div>
+        }
+        
         <div class="latest-image">
             <!-- Display uploaded images -->
             <h3 class="text-white">Latest analyzed image</h3>
             <div class="row justify-content-center">
                 @if (ViewData["LatestAnalyzedImages"] != null)
                 {
+                    
                     foreach (var image in latestOriginalImage)
                     {
                        
@@ -146,8 +160,16 @@
                             <img src="~/UploadedImages/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Object Image" style="height: 200px;">
                             <div class="card-body ">
                                 <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
-                                <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
-                                <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
+                                @if(MyHelpers.IsUserSignedIn(Context))
+                                {
+                                    <a href="~/UploadedImages/@image.FileName" download="@image.FileName" class="">@download</a>
+                                    <a href="@Url.Action("Delete", "Img", new { folderName = "UploadedImages", fileName = image.FileName })">Delete</a>
+                                }
+                                else
+                                {
+                                    <a class="btn" asp-area="" asp-controller="Login" asp-action="SignIn">Sign In</a>
+                                    <h5 style="font-size:15px;">(to download or delete)</h5>
+                                }
                             </div>
                         </div>
                     </div>
@@ -170,8 +192,16 @@
                             <img src="~/Thumbnails/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Thumbnail Image" style="height: 200px;">
                             <div class="card-body ">
                                 <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
-                                <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
-                                <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a>
+                                @if(MyHelpers.IsUserSignedIn(Context))
+                                {
+                                   <a href="~/Thumbnails/@image.FileName" download="@image.FileName" class="">@download</a>
+                                <a href="@Url.Action("Delete", "Img", new { folderName = "Thumbnails", fileName = image.FileName })">Delete</a> 
+                                }
+                                else
+                                {
+                                    <a class="btn" asp-area="" asp-controller="Login" asp-action="SignIn">Sign In</a>
+                                    <h5 style="font-size:15px;">(to download or delete)</h5>
+                                }
                             </div>
                         </div>
                     </div>
@@ -195,8 +225,17 @@
                             <img src="~/Objects/@image.FileName" class="img-thumbnail img-fluid hover-zoom" alt="Uploaded Image" style="height: 200px;">
                             <div class="card-body ">
                                 <p>Uploaded: @image.UploadedTimestamp.ToString("yyyy-MM-dd")</p>
-                                <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
-                                <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
+                                
+                                @if(MyHelpers.IsUserSignedIn(Context))
+                                {
+                                    <a href="~/Objects/@image.FileName" download="@image.FileName" class="">@download</a>
+                                    <a href="@Url.Action("Delete", "Img", new { folderName = "Objects", fileName = image.FileName })">Delete</a>
+                                }
+                                else
+                                {
+                                    <a class="btn" asp-area="" asp-controller="Login" asp-action="SignIn">Sign In</a>
+                                    <h5 style="font-size:15px;">(to download or delete)</h5>
+                                }
                             </div>
                         </div>
                     </div>

@@ -39,6 +39,7 @@ namespace Lab2_ImageService.Controllers
             ViewData["Thumbnail_Images"] = thumb;
             ViewData["Object_Images"] = objects;
 
+            ViewData["DeleteSuccess"] = "";
 
             return View(ic);
         }
@@ -67,6 +68,7 @@ namespace Lab2_ImageService.Controllers
                     using (var stream = new FileStream(imgFilePath, FileMode.Create))
                     {
                         await imgfile.CopyToAsync(stream);
+                        TempData["SuccessMessages"] = "Image successfully uploaded";
                     }
 
                     // Redirect to the index action or another appropriate action
@@ -95,23 +97,31 @@ namespace Lab2_ImageService.Controllers
             {
                 // Delete the file
                 System.IO.File.Delete(fullPath);
+                TempData["SuccessMessages"] = "Image successfully deleted";
             }
 
-            return RedirectToAction("Index", "Img");
+            // Get the current URL path
+            string currentPath = HttpContext.Request.Path.Value;
+
+                if (currentPath.Contains("/ImageAnalyze/AnalyzedImages"))
+                {
+                    return RedirectToAction("Index", "ImageAnalyze");
+                }
+                else if (currentPath.Contains(currentPath))
+                {
+                    return RedirectToAction("Index", "Img");
+                }
+                else
+                {
+                    // Redirect to a default action or controller if needed
+                    return RedirectToAction("DefaultAction", "DefaultController");
+                }
         }
 
-
-        DateTime ExtractDateFromFileName(string fileName)
-            {
-                var datePart = fileName.Split('_')[0]; // Assuming the date part is before the underscore
-                if (DateTime.TryParseExact(datePart, "yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-                {
-                    return parsedDate;
-                }
-                // Return a default date or handle the error as needed
-                return DateTime.MinValue;
-            }
-
-
+        public IActionResult DeleteSuccess()
+        {
+            return View();
         }
     }
+}
+

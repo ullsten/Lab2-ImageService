@@ -165,10 +165,12 @@ body {
 }
 
 .card-body{
-    height:170px;
-    display: flex;
+ height:220px;
+    /*   display: flex;
     flex-direction:column;
-    margin-bottom: 1em;
+    margin-bottom: 1em;*/
+  flex-grow: 1;
+  overflow: auto;
 }
 .successMessage{
     margin-top: 1em;

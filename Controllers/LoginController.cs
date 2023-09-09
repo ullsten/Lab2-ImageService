@@ -76,7 +76,9 @@ namespace Lab2_ImageService.Controllers
             {
                 HttpContext.Session.SetString("_UserToken", token);
 
-                return RedirectToAction("Index", "Home");
+                TempData["LoginMessage"] = "You have been successfully logged in";
+
+                return RedirectToAction("AnalyzedImages", "ImageAnalyze");
             }
             else
             {
@@ -87,6 +89,7 @@ namespace Lab2_ImageService.Controllers
         public IActionResult LogOut()
         {
             HttpContext.Session.Remove("_UserToken");
+            TempData["LogoutMessage"] = "You have been logged out. See ya!";
             return RedirectToAction("Index", "Home");
         }
     }
