@@ -1,4 +1,5 @@
 ﻿@model Lab2_ImageService.Models.ImageClass
+@using Lab2_ImageService.Helpers
 
 @{
     var thumbImages = ViewData["Thumbnail_Images"];
@@ -27,11 +28,21 @@
                 <option value="UploadedImages">Uploaded Images</option>
                 <option value="Objects">Objects</option>
                 <option value="Thumbnails">Thumbnails</option>
+                <option value="Prediction-Uploads">Prediction-Uploads</option>
             </select>
             <hr />
           
-            <input type="file" name="imgfile" />
-            <input type="submit" value="Upload" />
+            @if (MyHelpers.IsUserSignedIn(Context))
+            {
+                <input type="file" name="imgfile" />
+                <input type="submit" value="Upload" />
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    You must sign in to upload images.
+                </div>
+            }
         </form>
         @if (!string.IsNullOrEmpty(TempData["SuccessMessages"] as string))
         {

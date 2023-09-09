@@ -7,7 +7,6 @@ using System.Globalization;
 
 namespace Lab2_ImageService.Controllers
 {
-    [Authorize]
     public class ImgController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
@@ -16,6 +15,7 @@ namespace Lab2_ImageService.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
+     
         public IActionResult Index()
         {
             ImageClass ic = new ImageClass();
@@ -117,11 +117,6 @@ namespace Lab2_ImageService.Controllers
                     // Redirect to a default action or controller if needed
                     return RedirectToAction("DefaultAction", "DefaultController");
                 }
-        }
-
-        public IActionResult DeleteSuccess()
-        {
-            return View();
         }
     }
 }
