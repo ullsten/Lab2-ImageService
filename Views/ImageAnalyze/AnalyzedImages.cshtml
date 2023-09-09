@@ -41,14 +41,10 @@
     <div class="">
         <div class="text-center">
             <!-- Buttons to toggle image categories -->
-            <button id="showUploadedImages">Original Images</button>
-            <button id="showThumbnails">Thumbnails</button>
-            <button id="showObjectImages">Objects Images</button>
-            @if(MyHelpers.IsUserSignedIn(Context))
-            {
-                <a class="" asp-area="" asp-controller="Img" asp-action="Index"><button>Delete/Add Images</button></a>
-            }
-          
+            <a class="btn btn-light" id="showUploadedImages">Original Images</a>
+            <a class="btn btn-light" id="showThumbnails">Thumbnails</a>
+            <a class="btn btn-light" id="showObjectImages">Objects Images</a>
+            <a class="btn btn-danger" asp-area="" asp-controller="Img" asp-action="Index">Delete/Add Images</a>
            
         </div>
         @if (!string.IsNullOrEmpty(TempData["LoginMessage"] as string))

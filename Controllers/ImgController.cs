@@ -7,6 +7,7 @@ using System.Globalization;
 
 namespace Lab2_ImageService.Controllers
 {
+    [Authorize]
     public class ImgController : Controller
     {
         private readonly IWebHostEnvironment _hostEnvironment;
